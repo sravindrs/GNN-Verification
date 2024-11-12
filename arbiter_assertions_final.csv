@@ -1,0 +1,4591 @@
+name,assertion_sv,line_number,expected_result,code,file_funct
+check_state_idle,assert property (@(posedge clk) state == IDLE |-> pass_token == 1),29,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin //
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_state_ready,assert property (@(posedge clk) state == READY |-> ack == 1),35,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY; //
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_state_busy,assert property (@(posedge clk) state == BUSY |-> ack == 0),41,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE; //
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_idle_to_ready_transition,assert property (@(posedge clk) (state == IDLE && req && is_selected) |-> state == READY),30,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state) //
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_ready_to_busy_transition,assert property (@(posedge clk) state == READY |-> state == BUSY),36,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; //
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_busy_to_idle_transition,assert property (@(posedge clk) (state == BUSY && !req) |-> state == IDLE),42,PASS,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0; //
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_fail_idle_to_busy,assert property (@(posedge clk) state == IDLE |-> state == BUSY),29,FAIL,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin //
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_fail_ready_to_idle,assert property (@(posedge clk) state == READY |-> state == IDLE),35,FAIL,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY; //
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_fail_busy_to_ready,assert property (@(posedge clk) state == BUSY |-> state == READY),41,FAIL,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0; //
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_fail_idle_pass_token,assert property (@(posedge clk) state == IDLE |-> pass_token == 0),29,FAIL,"
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY; //
+          pass_token = 0; 
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule",arbiter_controller
+check_state_A_to_B,assert property (@(posedge clk) (state == A && active) |-> state == B),18,PASS,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) // Line 18
+        A: state = B;
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_state_B_to_C,assert property (@(posedge clk) (state == B && active) |-> state == C),19,PASS,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B; // Line 19
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_state_C_to_A,assert property (@(posedge clk) (state == C && active) |-> state == A),20,PASS,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B;
+        B: state = C; // Line 20
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_state_A_to_C,assert property (@(posedge clk) (state == A && active) |-> state == C),18,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) // Line 18
+        A: state = B;
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_state_B_to_A,assert property (@(posedge clk) (state == B && active) |-> state == A),19,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B; // Line 19
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_state_C_to_B,assert property (@(posedge clk) (state == C && active) |-> state == B),20,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B;
+        B: state = C; // Line 20
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_inactive_state,assert property (@(posedge clk) (!active) |-> sel == X),12,PASS,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A; // Line 12
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B;
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_active_state_A,assert property (@(posedge clk) (state == A && active) |-> sel == A),18,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) // Line 18
+        A: state = B;
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_active_state_B,assert property (@(posedge clk) (state == B && active) |-> sel == B),19,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B; // Line 19
+        B: state = C;
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+check_active_state_C,assert property (@(posedge clk) (state == C && active) |-> sel == C),20,FAIL,"module arbiter(clk, sel, active);
+  input clk, active;
+  output reg [1:0] sel;
+
+  parameter A = 0;
+  parameter B = 1;
+  parameter C = 2;
+  parameter X = 3;
+
+  reg [1:0] state;
+
+  initial state = A;
+
+  assign sel = active ? state : X;
+
+  always @(posedge clk) begin
+    if (active) begin
+      case(state) 
+        A: state = B;
+        B: state = C; // Line 20
+        C: state = A;
+      endcase
+    end
+  end
+endmodule",arbiter_arbiter
+assertion_1,assert property (@(posedge clk) state == NO_REQ |-> req == 0),18,FAIL,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state) // 
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_2,assert property (@(posedge clk) state == REQ |-> req == 1),23,PASS,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end // 
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_3,assert property (@(posedge clk) state == HAVE_TOKEN |-> req == 0),27,FAIL,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin // 
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_4,assert property (@(posedge clk) state == NO_REQ && rand_choice==1 |-> req == 1),19,PASS,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ: // 
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_5,assert property (@(posedge clk) state == REQ && rand_choice==0 |-> req == 1),24,FAIL,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ: // 
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_6,assert property (@(posedge clk) state == HAVE_TOKEN && rand_choice==1 |-> req == 0),28,PASS,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0; // Line 28
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_7,assert property (@(posedge clk) state == NO_REQ && rand_choice==0 |-> req == 0),20,FAIL,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin 
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_8,assert property (@(posedge clk) state == REQ && ack==1 |-> state == HAVE_TOKEN),25,PASS,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN; 
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_9,assert property (@(posedge clk) state == HAVE_TOKEN && rand_choice==0 |-> state == HAVE_TOKEN),29,FAIL,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1;
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ; // 
+        end
+    endcase
+  end
+endmodule",arbiter_client
+assertion_10,assert property (@(posedge clk) state == NO_REQ && rand_choice==1 |-> state == REQ),21,PASS,"module client(clk, req, ack);
+  input clk, ack;
+  output reg req;
+
+  parameter NO_REQ = 0;
+  parameter REQ = 1;
+  parameter HAVE_TOKEN = 2;
+
+  reg [1:0] state;
+
+  wire rand_choice = 1'b0;
+
+  initial req = 0;
+  initial state = NO_REQ;
+
+  always @(posedge clk) begin
+    case(state)
+      NO_REQ:
+        if (rand_choice) begin
+          req = 1; // 
+          state = REQ;
+        end
+      REQ:
+        if (ack) state = HAVE_TOKEN;
+      HAVE_TOKEN:
+        if (rand_choice) begin
+          req = 0;
+          state = NO_REQ;
+        end
+    endcase
+  end
+endmodule",arbiter_client
+check_ackA_ackB,assert property (@(posedge clk) !(ackA == 1 && ackB == 1)),35,PASS,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id); // 
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_ackB_ackC,assert property (@(posedge clk) !(ackB == 1 && ackC == 1)),36,PASS,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id; // 
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_ackC_ackA,assert property (@(posedge clk) !(ackC == 1 && ackA == 1)),37,PASS,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token; // 
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_IDLE_to_READY,assert property (@(posedge clk) state == IDLE |-> state == READY),69,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY; // 
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_READY_to_BUSY,assert property (@(posedge clk) state == READY |-> state == BUSY),77,PASS,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin // 
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_BUSY_to_IDLE,assert property (@(posedge clk) state == BUSY |-> state == IDLE),83,PASS,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin // 
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_A_to_B,assert property (@(posedge clk) state == A |-> state == B),113,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X; // 
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_B_to_C,assert property (@(posedge clk) state == B |-> state == C),115,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin // 
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_C_to_A,assert property (@(posedge clk) state == C |-> state == A),117,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active) // 
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_NO_REQ_to_REQ,assert property (@(posedge clk) state == NO_REQ |-> state == REQ),142,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0; // 
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_REQ_to_HAVE_TOKEN,assert property (@(posedge clk) state == REQ |-> state == HAVE_TOKEN),146,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state; // 
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_HAVE_TOKEN_to_NO_REQ,assert property (@(posedge clk) state == HAVE_TOKEN |-> state == NO_REQ),150,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0; // 
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_IDLE,assert property (@(posedge clk) state == IDLE),61,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id); // 
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_A,assert property (@(posedge clk) state == A),107,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1; // 
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_state_NO_REQ,assert property (@(posedge clk) state == NO_REQ),138,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0; // 
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_active,assert property (@(posedge clk) active == 1),16,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2; // 
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_sel,assert property (@(posedge clk) sel == X),120,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B; // 
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_ackA,assert property (@(posedge clk) ackA == 1),33,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule // 
+
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_ackB,assert property (@(posedge clk) ackB == 1),34,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id); // 
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
+check_ackC,assert property (@(posedge clk) ackC == 1),35,FAIL,"module main(clk, ackA, ackB, ackC);
+input clk;
+output ackA, ackB, ackC;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel;
+wire active;
+
+assign active = pass_tokenA || pass_tokenB || pass_tokenC;
+
+controller controllerA(clk, reqA, ackA, sel, pass_tokenA, A);
+controller controllerB(clk, reqB, ackB, sel, pass_tokenB, B);
+controller controllerC(clk, reqC, ackC, sel, pass_tokenC, C);
+arbiter arbiter(clk, sel, active);
+
+client clientA(clk, reqA, ackA);
+client clientB(clk, reqB, ackB);
+client clientC(clk, reqC, ackC);
+
+assert property1: !(ackA == 1 && ackB == 1 || ackB == 1 && ackC == 1 || ackC == 1 && ackA ==1);
+endmodule
+
+module controller(clk, req, ack, sel, pass_token, id); // 
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
+
+module arbiter(clk, sel, active);
+input clk, active;
+output sel;
+
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+wire [1:0] sel;
+reg [1:0] state;
+
+initial state = A;
+
+assign sel = active ? state: X;
+
+always @(posedge clk) begin
+  if (active)
+    case(state) 
+      A:
+        state = B;
+      B:
+        state = C;
+      C:
+        state = A;
+    endcase
+end
+endmodule
+
+module client(clk, req, ack);
+input clk, ack;
+output req;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+reg req;
+reg [1:0] state;
+
+wire rand_choice = 1'b0;
+
+initial req = 0;
+initial state = NO_REQ;
+
+always @(posedge clk) begin
+  case(state)
+    NO_REQ:
+      if (rand_choice)
+        begin
+        req = 1;
+        state = REQ;
+        end
+    REQ:
+      if (ack)
+        state = HAVE_TOKEN;
+    HAVE_TOKEN:
+      if (rand_choice)
+        begin
+        req = 0;
+        state = NO_REQ;
+        end
+  endcase
+end
+endmodule",
