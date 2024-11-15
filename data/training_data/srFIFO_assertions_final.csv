@@ -1,0 +1,861 @@
+name,assertion_sv,line_number,expected_result,code,file_funct
+check_dataOut_after_push,assert property (@(posedge clock) push & ~full |-> dataOut == dataIn),41,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail]; // 
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_tail_increment_on_push,assert property (@(posedge clock) push & ~full & ~empty |-> tail == $past(tail) + 1),31,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin //
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty) //
+                tail = tail + 1; // 
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_tail_zero_on_pop,assert property (@(posedge clock) pop & ~empty & (tail == 0) |-> tail == 0),35,FAIL,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin //
+            if (tail == 0) //
+                empty = 1; // 
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_empty_flag_after_pop,assert property (@(posedge clock) pop & ~empty & (tail == 0) |-> empty == 1),35,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin //
+            if (tail == 0) //
+                empty = 1; // 
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_tail_decrement_on_pop,assert property (@(posedge clock) pop & ~empty & (tail != 0) |-> tail == $past(tail) - 1),37,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin //
+            if (tail == 0) //
+                empty = 1; // 
+            else
+                tail = tail - 1; // 
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_full_flag,assert property (@(posedge clock) tail == LAST |-> full),43,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST); //
+endmodule",srFIFO
+check_empty_flag,assert property (@(posedge clock) tail == 0 |-> empty),22,FAIL,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1; // 
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin //
+            if (tail == 0) //
+                empty = 1; // 
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_push_noop_on_full,assert property (@(posedge clock) push & ~full |-> tail == $past(tail)),29,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn; // 
+            if (~empty)
+                tail = tail + 1; // 
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_pop_noop_on_empty,assert property (@(posedge clock) pop & empty |-> tail == $past(tail)),33,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin // 
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_mem_shift_on_push,assert property (@(posedge clock) push & ~full |-> mem[1] == $past(mem[0])),29,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn; // 
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_dataIn_to_mem0_on_push,assert property (@(posedge clock) push & ~full |-> mem[0] == dataIn),30,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty) // 
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_no_change_on_no_pushpop,assert property (@(posedge clock) ~push & ~pop |-> tail == $past(tail)),28,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1]; // 
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_tail_value_on_push,assert property (@(posedge clock) push & ~full |-> tail < LAST),31,FAIL,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1; // 
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_dataOut_value_on_pop,assert property (@(posedge clock) pop & ~empty |-> dataOut == $past(mem[tail])),42,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST); // 
+endmodule",srFIFO
+check_dataOut_value_on_push,assert property (@(posedge clock) push & ~full |-> dataOut == $past(mem[tail])),42,FAIL,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST); // 
+endmodule",srFIFO
+check_mem_no_change_on_pop,assert property (@(posedge clock) pop & ~empty |-> mem[0] == $past(mem[0])),34,FAIL,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0) // 
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_tail_no_change_on_pushpop,assert property (@(posedge clock) push & pop |-> tail == $past(tail)),28,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1]; // 
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_initial_empty_condition,assert property (@(posedge clock) empty == 1 |-> tail == 0),21,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0; // 
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO
+check_initial_full_condition,assert property (@(posedge clock) full |-> tail == LAST),43,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0;
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule // ",srFIFO
+check_empty_condition_on_push,assert property (@(posedge clock) push & ~full |-> empty == 0),32,PASS,"module srFIFO(clock, dataIn, push, pop, dataOut, full, empty);
+    parameter MSBD = 3;
+    parameter LAST = 15;
+    parameter MSBA = 3;
+    input clock;
+    input [MSBD:0] dataIn;
+    input push;
+    input pop;
+    output [MSBD:0] dataOut;
+    output full;
+    output empty;
+
+    reg [MSBD:0] mem[0:LAST];
+    reg [MSBA:0] tail;
+    reg empty;
+    integer i;
+
+    initial begin
+        for (i = 0; i <= LAST; i = i + 1)
+            mem[i] = 0;
+        tail = 0;
+        empty = 1;
+    end
+
+    always @(posedge clock) begin
+        if (push & ~full) begin
+            for (i = LAST; i > 0; i = i - 1)
+                mem[i] = mem[i - 1];
+            mem[0] = dataIn;
+            if (~empty)
+                tail = tail + 1;
+            empty = 0; // 
+        end else if (pop & ~empty) begin
+            if (tail == 0)
+                empty = 1;
+            else
+                tail = tail - 1;
+        end
+    end
+
+    assign dataOut = mem[tail];
+    assign full = (tail == LAST);
+endmodule",srFIFO

@@ -1,0 +1,827 @@
+name,assertion_sv,line_number,expected_result,code
+assertion_1,assert property (@(posedge clk) b0 != r0 |-> b1 == r1),5,FAIL,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3; 
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) && //
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+
+
+
+//The validity function (valid) is a combinational function that checks whether the invariant between the register file (r0, r1, r2, r3) and the shift registers (b0, b1, b2, b3) is maintained. This function ensures that if any register value in b matches a value in r, their neighboring registers must also hold corresponding values. The validity function enforces the core safety property of the system, which is to maintain consistent neighbor relationships between the registers."
+assertion_2,assert property (@(posedge clk) b3 != r0 |-> b0 == r1),20,PASS,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) && // 
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_3,assert property (@(posedge clk) b1 != r1 |-> b2 == r2),9,FAIL,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) && // 
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_4,assert property (@(posedge clk) b2 != r1 |-> b3 == r2),12,PASS,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) && // 
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_5,assert property (@(posedge clk) b0 != r1 |-> b1 == r2),6,FAIL,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid 
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) && //
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_6,assert property (@(posedge clk) b3 != r1 |-> b0 == r2),18,PASS,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) && // 
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_7,assert property (@(posedge clk) b1 != r2 |-> b2 == r3),10,FAIL,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) && // 
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_8,assert property (@(posedge clk) b2 != r2 |-> b3 == r3),13,PASS,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) && // 
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_9,assert property (@(posedge clk) b0 != r3 |-> b1 == r0),7,FAIL,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid = 
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) && //
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) &&
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assertion_10,assert property (@(posedge clk) b3 != r3 |-> b0 == r0),19,PASS,"function valid;
+    input [2-1:0] b0, r0;
+    input [2-1:0] b1, r1;
+    input [2-1:0] b2, r2;
+    input [2-1:0] b3, r3;
+    begin: _valid
+        valid =
+            (b0 != r0 || b1 == r1) &&
+            (b0 != r1 || b1 == r2) &&
+            (b0 != r2 || b1 == r3) &&
+            (b0 != r3 || b1 == r0) &&
+            (b1 != r0 || b2 == r1) &&
+            (b1 != r1 || b2 == r2) &&
+            (b1 != r2 || b2 == r3) &&
+            (b1 != r3 || b2 == r0) &&
+            (b2 != r0 || b3 == r1) &&
+            (b2 != r1 || b3 == r2) &&
+            (b2 != r2 || b3 == r3) &&
+            (b2 != r3 || b3 == r0) && // 
+            (b3 != r0 || b0 == r1) &&
+            (b3 != r1 || b0 == r2) &&
+            (b3 != r2 || b0 == r3) &&
+            (b3 != r3 || b0 == r0);
+    end
+endfunction 
+"
+assert_1,assert property (@(posedge clock) b0[1:0] == 2'b00),22,PASS,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0; // 
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end    
+endmodule"
+assert_2,assert property (@(posedge clock) r1[1:0] == 2'b00),23,PASS,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0; // 
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end   
+endmodule"
+assert_3,assert property (@(posedge clock) b0[1:0] == r0[1:0]),24,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0; // 
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end    
+endmodule"
+assert_4,assert property (@(posedge clock) b1[1:0] == r1[1:0]),25,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end // 
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end
+endmodule"
+assert_5,assert property (@(posedge clock) b2[1:0] == r2[1:0]),26,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end // 
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end
+endmodule"
+assert_6,assert property (@(posedge clock) b3[1:0] == r3[1:0]),27,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin // 
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end
+endmodule"
+assert_7,assert property (@(posedge clock) b3[1:0] == b0[1:0]),28,PASS,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1; // 
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end   
+endmodule"
+assert_8,assert property (@(posedge clock) b0[1:0] == b1[1:0]),29,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2; // 
+        b2 = b3;
+        b3 = b0;
+    end
+endmodule"
+assert_9,assert property (@(posedge clock) r0[1:0] == r1[1:0]),30,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3; // 
+        b3 = b0;
+    end    
+endmodule"
+assert_10,assert property (@(posedge clock) r1[1:0] == r2[1:0]),31,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0; // 
+    end    
+endmodule"
+assert_11,assert property (@(posedge clock) r2[1:0] == r3[1:0]),32,FAIL,"module main(clock);
+    input clock;
+    reg [2-1:0] b0, r0;
+    reg [2-1:0] b1, r1;
+    reg [2-1:0] b2, r2;
+    reg [2-1:0] b3, r3;
+    integer index;
+    initial begin
+        for (index = 0; index < 2; index = index + 1) begin
+            b0[index] = 0; r0[index] = 0;
+            b1[index] = 0; r1[index] = 0;
+            b2[index] = 0; r2[index] = 0;
+            b3[index] = 0; r3[index] = 0;
+        end
+        if (!valid(
+               b0, r0,
+               b1, r1,
+               b2, r2,
+               b3, r3
+           )) begin
+            b0 = 0; r0 = 0;
+            b1 = 0; r1 = 0;
+            b2 = 0; r2 = 0;
+            b3 = 0; r3 = 0;
+        end
+    end
+    always @ (posedge clock) begin
+        b0 = b1;
+        b1 = b2;
+        b2 = b3;
+        b3 = b0;
+    end // 
+endmodule"
+check_initial_b0,assert property (@(posedge clk) $rose(index) |-> (b0[index] == 0)),3,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0; // 
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_r0,assert property (@(posedge clk) $rose(index) |-> (r0[index] == 0)),3,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0; // 
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_b1,assert property (@(posedge clk) $rose(index) |-> (b1[index] == 0)),4,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0; // 
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_r1,assert property (@(posedge clk) $rose(index) |-> (r1[index] == 0)),4,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0; // 
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_b2,assert property (@(posedge clk) $rose(index) |-> (b2[index] == 0)),5,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0; // 
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_r2,assert property (@(posedge clk) $rose(index) |-> (r2[index] == 0)),5,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0; // 
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_b3,assert property (@(posedge clk) $rose(index) |-> (b3[index] == 0)),6,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0; // 
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_initial_r3,assert property (@(posedge clk) $rose(index) |-> (r3[index] == 0)),6,PASS,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0; // 
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1,
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_validity_failed_b0,"assert property (@(posedge clk) !$rose(valid(b0, r0, b1, r1, b2, r2, b3, r3)) |-> (b0 == 0))",10,FAIL,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1, // 
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"
+check_validity_failed_r0,"assert property (@(posedge clk) !$rose(valid(b0, r0, b1, r1, b2, r2, b3, r3)) |-> (r0 == 0))",10,FAIL,"initial begin
+    for (index = 0; index < 2; index = index + 1) begin
+        b0[index] = 0; r0[index] = 0;
+        b1[index] = 0; r1[index] = 0;
+        b2[index] = 0; r2[index] = 0;
+        b3[index] = 0; r3[index] = 0;
+    end
+    if (!valid(
+           b0, r0,
+           b1, r1, // 
+           b2, r2,
+           b3, r3
+       )) begin
+        b0 = 0; r0 = 0;
+        b1 = 0; r1 = 0;
+        b2 = 0; r2 = 0;
+        b3 = 0; r3 = 0;
+    end
+end
+"

@@ -1,0 +1,1921 @@
+name,assertion_sv,line_number,expected_result,code
+check_initialization_busy,assert property (@(posedge clock) busy[0] == 0 && busy[1] == 0 && busy[2] == 0 && busy[3] == 0 && busy[4] == 0 && busy[5] == 0 && busy[6] == 0 && busy[7] == 0 && busy[8] == 0 && busy[9] == 0 && busy[10] == 0 && busy[11] == 0 && busy[12] == 0 && busy[13] == 0 && busy[14] == 0 && busy[15] == 0),18,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0; // 
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_initialization_count,assert property (@(posedge clock) count == 0),21,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16); // 
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_initialization_alloc,assert property (@(posedge clock) alloc == 0),22,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr = // 
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_initialization_free,assert property (@(posedge clock) free == 0),23,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 : // 
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_initialization_free_addr,assert property (@(posedge clock) free_addr == 0),24,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 : // 
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_nack_when_all_busy,assert property (@(posedge clock) (alloc & (count == 16)) |-> nack),29,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 : // 
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_nack_when_not_all_busy,assert property (@(posedge clock) (alloc & (count != 16)) |-> ~nack),29,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 : // 
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_alloc_addr,assert property (@(posedge clock) ~busy[0] |-> alloc_addr == 0),31,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 : // 
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_alloc_raw_to_alloc,assert property (@(posedge clock) alloc_raw |-> alloc),52,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_free_raw_to_free,assert property (@(posedge clock) free_raw |-> free),52,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_free_addr_raw_to_free_addr,assert property (@(posedge clock) free_addr_raw |-> free_addr),52,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_count_increment,assert property (@(posedge clock) (alloc & ~nack) |-> count == $past(count) + 1),54,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_count_decrement,assert property (@(posedge clock) (free & busy[free_addr]) |-> count == $past(count) - 1),54,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_busy_free,assert property (@(posedge clock) free |-> busy[free_addr] == 0),55,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_busy_alloc,assert property (@(posedge clock) (alloc & ~nack) |-> busy[alloc_addr] == 1),56,FAIL,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_allocation_when_busy,assert property (@(posedge clock) (alloc & busy[alloc_addr]) |-> nack),56,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_deallocation_when_not_busy,assert property (@(posedge clock) (free & ~busy[free_addr]) |-> ~nack),56,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_count_overflow,assert property (@(posedge clock) (count != 16) |-> ~nack),29,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 : // 
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_allocation_without_request,assert property (@(posedge clock) (~alloc_raw) |-> ~alloc),52,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_deallocation_without_request,assert property (@(posedge clock) (~free_raw) |-> ~free),52,PASS,"module main(clock,alloc_raw,nack,alloc_addr,free_raw,free_addr_raw);
+    input		     clock;
+    input 		     alloc_raw;
+    output 		     nack;
+    output [(4-1):0] alloc_addr;
+    input 		     free_raw;
+    input [(4-1):0]  free_addr_raw;
+    reg 		     busy [0:(16 - 1)];
+    reg [4:0] 	     count;
+    reg 		     alloc, free;
+    reg [(4-1):0]    free_addr;
+    integer 		     i;
+   initial begin
+	for (i = 0; i < 16; i = i + 1)
+	  busy[i] = 0;
+	count = 0;
+	alloc = 0;
+	free = 0;
+	free_addr = 0;
+    end
+    assign nack = alloc & (count == 16);
+    assign alloc_addr =
+		       ~busy[0] ? 0 :
+		       ~busy[1] ? 1 :
+		       ~busy[2] ? 2 :
+		       ~busy[3] ? 3 :
+		       ~busy[4] ? 4 :
+		       ~busy[5] ? 5 :
+		       ~busy[6] ? 6 :
+		       ~busy[7] ? 7 :
+		       ~busy[8] ? 8 :
+		       ~busy[9] ? 9 :
+		       ~busy[10] ? 10 :
+		       ~busy[11] ? 11 :
+		       ~busy[12] ? 12 :
+		       ~busy[13] ? 13 :
+		       ~busy[14] ? 14 :
+		       ~busy[15] ? 15 :
+		       0;
+    always @ (posedge clock) begin
+	alloc = alloc_raw;
+	free = free_raw;
+	free_addr = free_addr_raw;
+    end
+    always @ (posedge clock) begin
+	count = count + (alloc & ~nack) - (free & busy[free_addr]);
+	if (free) busy[free_addr] = 0;
+	if (alloc & ~nack) busy[alloc_addr] = 1;
+    end
+endmodule"
+check_free_addr,assert property (@(posedge clock) free |-> !(busy[free_addr])),9,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0; // 
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_busy_free,assert property (@(posedge clock) free |-> !busy[free_addr]),9,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0; // 
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_busy_alloc,assert property (@(posedge clock) (alloc & ~nack) |-> busy[alloc_addr]),10,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1; // 
+    end
+endmodule"
+check_alloc_addr,assert property (@(posedge clock) (alloc & ~nack) |-> busy[alloc_addr]),10,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1; // 
+    end
+endmodule"
+check_count_update,assert property (@(posedge clock) alloc |-> (count == $past(count) + 1)),7,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_count_decrease,assert property (@(posedge clock) free |-> (count == $past(count) - 1)),7,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_nack_alloc,assert property (@(posedge clock) nack |-> (count == $past(count))),7,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_nack_alloc_fail,assert property (@(posedge clock) nack |-> (count == $past(count) + 1)),7,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_busy_free_addr,assert property (@(posedge clock) free |-> !(busy[free_addr])),9,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0; // 
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_busy_alloc_addr,assert property (@(posedge clock) (alloc & ~nack) |-> busy[alloc_addr]),10,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1; // 
+    end
+endmodule"
+check_count_increase,assert property (@(posedge clock) alloc |-> (count == $past(count) + 1)),7,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_count_decrement,assert property (@(posedge clock) free |-> (count == $past(count) - 1)),7,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_nack_count,assert property (@(posedge clock) nack |-> (count == $past(count))),7,FAIL,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_nack_count_fail,assert property (@(posedge clock) nack |-> (count == $past(count) + 1)),7,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin // 
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0;          
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_busy_free_addr_fail,assert property (@(posedge clock) free |-> !(busy[free_addr])),9,PASS,"module update_logic(clock, alloc, nack, free, free_addr, alloc_addr, busy, count);
+    input clock;
+    input alloc, nack, free;
+    input [3:0] free_addr, alloc_addr;
+    output reg busy [0:15];
+    output reg [4:0] count;
+    always @(posedge clock) begin
+        count = count + (alloc & ~nack) - (free & busy[free_addr]);
+        if (free) busy[free_addr] = 0; // 
+        if (alloc & ~nack) busy[alloc_addr] = 1;  
+    end
+endmodule"
+check_nack_assertion_when_alloc_raw_is_true_and_count_16,assert property (@(posedge clk) alloc_raw & (count == 16) |-> nack == 1'b1),7,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count; 
+    assign nack = alloc_raw & (count == 16); //
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_nack_assertion_when_alloc_raw_is_false,assert property (@(posedge clk) ~alloc_raw |-> nack == 1'b0),7,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;  
+    assign nack = alloc_raw & (count == 16); //
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_nack_assertion_when_count_is_not_16,assert property (@(posedge clk) (count != 16) |-> nack == 1'b0),7,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count; 
+    assign nack = alloc_raw & (count == 16); //
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_0_is_free,assert property (@(posedge clk) ~busy[0] |-> alloc_addr == 4'b0000),9,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin // 
+        alloc_addr =
+            ~busy[0] ? 0 : //
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_1_is_free,assert property (@(posedge clk) ~busy[1] |-> alloc_addr == 4'b0001),10,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr = 
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 : //
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_2_is_free,assert property (@(posedge clk) ~busy[2] |-> alloc_addr == 4'b0010),11,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :  
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 : //
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_3_is_free,assert property (@(posedge clk) ~busy[3] |-> alloc_addr == 4'b0011),12,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 : 
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 : //
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_4_is_free,assert property (@(posedge clk) ~busy[4] |-> alloc_addr == 4'b0100),13,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 : 
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 : //
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_5_is_free,assert property (@(posedge clk) ~busy[5] |-> alloc_addr == 4'b0101),14,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 : 
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 : //
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_6_is_free,assert property (@(posedge clk) ~busy[6] |-> alloc_addr == 4'b0110),15,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :  
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 : //
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_7_is_free,assert property (@(posedge clk) ~busy[7] |-> alloc_addr == 4'b0111),16,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :  
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 : //
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_8_is_free,assert property (@(posedge clk) ~busy[8] |-> alloc_addr == 4'b1000),17,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :  
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 : //
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_9_is_free,assert property (@(posedge clk) ~busy[9] |-> alloc_addr == 4'b1001),18,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :  
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 : //
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_10_is_free,assert property (@(posedge clk) ~busy[10] |-> alloc_addr == 4'b1010),19,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 : 
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 : //
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_11_is_free,assert property (@(posedge clk) ~busy[11] |-> alloc_addr == 4'b1011),20,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 : 
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 : //
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_12_is_free,assert property (@(posedge clk) ~busy[12] |-> alloc_addr == 4'b1100),21,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :  
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 : //
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_13_is_free,assert property (@(posedge clk) ~busy[13] |-> alloc_addr == 4'b1101),22,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 : 
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 : //
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_14_is_free,assert property (@(posedge clk) ~busy[14] |-> alloc_addr == 4'b1110),23,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :  
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 : //
+            ~busy[15] ? 15 :
+            0;
+    end
+endmodule"
+check_alloc_addr_when_busy_15_is_free,assert property (@(posedge clk) ~busy[15] |-> alloc_addr == 4'b1111),24,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :  
+            ~busy[14] ? 14 :
+            ~busy[15] ? 15 : //
+            0;
+    end
+endmodule"
+check_alloc_addr_when_all_busy,assert property (@(posedge clk) (busy[0:15] == 16'b1111_1111_1111_1111) |-> alloc_addr == 4'b0000),25,PASS,"module allocation_logic(clock, alloc_raw, nack, alloc_addr, busy, count);
+    input clock;
+    input alloc_raw;
+    output nack;
+    output reg [3:0] alloc_addr;
+    reg busy [0:15];
+    reg [4:0] count;
+    assign nack = alloc_raw & (count == 16); 
+    always @(*) begin
+        alloc_addr =
+            ~busy[0] ? 0 :
+            ~busy[1] ? 1 :
+            ~busy[2] ? 2 :
+            ~busy[3] ? 3 :
+            ~busy[4] ? 4 :
+            ~busy[5] ? 5 :
+            ~busy[6] ? 6 :
+            ~busy[7] ? 7 :
+            ~busy[8] ? 8 :
+            ~busy[9] ? 9 :
+            ~busy[10] ? 10 :
+            ~busy[11] ? 11 :
+            ~busy[12] ? 12 :
+            ~busy[13] ? 13 :
+            ~busy[14] ? 14 : 
+            ~busy[15] ? 15 :
+            0; //
+    end
+endmodule"
+check_busy_init,assert property (@(posedge clock) busy[i] == 0),7,PASS,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i; // 
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_count_init,assert property (@(posedge clock) count == 0),9,PASS,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1) // 
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_alloc_init,assert property (@(posedge clock) alloc == 0),10,PASS,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; // 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_free_init,assert property (@(posedge clock) free == 0),11,PASS,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0; // 
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_free_addr_init,assert property (@(posedge clock) free_addr == 0),12,PASS,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0; // 
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_busy_not_init,assert property (@(posedge clock) busy[i] != 0),7,FAIL,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i; // 
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_count_not_init,assert property (@(posedge clock) count != 0),9,FAIL,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1) // 
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_alloc_not_init,assert property (@(posedge clock) alloc != 0),10,FAIL,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; // 
+        count = 0;         
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_free_not_init,assert property (@(posedge clock) free != 0),11,FAIL,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0; // 
+        alloc = 0;         
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
+check_free_addr_not_init,assert property (@(posedge clock) free_addr != 0),12,FAIL,"module init_state(clock);
+    input clock;
+    reg busy [0:(16 - 1)];
+    reg [4:0] count;
+    reg alloc, free;
+    reg [(4-1):0] free_addr;
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i = i + 1)
+            busy[i] = 0; 
+        count = 0;         
+        alloc = 0; // 
+        free = 0;
+        free_addr = 0;    
+    end
+endmodule"
