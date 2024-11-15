@@ -1,0 +1,56 @@
+module controller(clk, req, ack, sel, pass_token, id);
+input clk, req, sel, id;
+output ack, pass_token;
+
+parameter A =0;
+parameter B =1;
+parameter C =2;
+parameter X =3;
+
+parameter IDLE = 0;
+parameter READY = 1;
+parameter BUSY = 2;
+
+parameter NO_REQ = 0;
+parameter REQ = 1;
+parameter HAVE_TOKEN = 2;
+
+wire [1:0] sel, id;
+reg ack, pass_token;
+reg [1:0] state;
+
+initial state = IDLE;
+initial ack = 0;
+initial pass_token = 1;
+
+wire is_selected;
+assign is_selected = (sel == id);
+
+always @(posedge clk) begin
+  case(state)
+    IDLE:
+      if (is_selected)
+        if (req)
+          begin
+          state = READY;
+          pass_token = 0; /* dropping off this line causes a safety bug */
+          end
+        else
+          pass_token = 1;
+      else
+        pass_token = 0;
+    READY:
+      begin
+      state = BUSY;
+      ack = 1;
+      end
+    BUSY:
+      if (!req)
+        begin
+        state = IDLE;
+        ack = 0;
+        pass_token = 1;
+        end
+  endcase
+end
+endmodule
