@@ -1,0 +1,2511 @@
+name,assertion_sv,line_number,expected_result,code
+check_flip_unchanged,assert property (@(posedge clock) lclFlip[select] == flip |-> lclFlip[select] == flip),11,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip, //
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1], //
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin // 
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip; //
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin //
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L0_to_L1,assert property (@(posedge clock) pc[select] == L0 |-> pc[select] == L1),13,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select]) // 
+                L0: if (passctr < PASSES) begin //
+                        lclFlip[select] = flip; //
+                        pc[select] = L1; //
+                    end
+                L1: begin //
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}]; //
+                        pc[select] = L2; //
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_ctr_flip,"assert property (@(posedge clock) ctr[{select, lclFlip[select]}] == 0 |-> ctr[{select, lclFlip[select]}] == 1)",17,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end 
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}]; //
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L1_to_L2,assert property (@(posedge clock) pc[select] == L1 |-> pc[select] == L2),19,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin //
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}]; // 
+                        pc[select] = L2; //
+                    end
+                L2: if (lclFlip[select] == flip) begin //
+                        both[select] = 0; //
+                        pc[select] = L4; //
+                    end else begin //
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L3; //
+                    end
+                L3: begin 
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_both_zero_when_flip_match,assert property (@(posedge clock) lclFlip[select] == flip |-> both[select] == 0),21,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end 
+                L2: if (lclFlip[select] == flip) begin //
+                        both[select] = 0; //
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L2_to_L4_when_flip_match,assert property (@(posedge clock) pc[select] == L2 && lclFlip[select] == flip |-> pc[select] == L4),23,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin //
+                        both[select] = 0; // 
+                        pc[select] = L4; //
+                    end else begin //
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L3; //
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin //
+                        passctr = passctr + 1; //
+                        pc[select] = L5; //
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_ctr_flip_when_lclFlip_not_match,"assert property (@(posedge clock) lclFlip[select] != flip |-> ctr[{select, ~lclFlip[select]}] == ~ctr[{select, ~lclFlip[select]}])",25,FAIL,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin //
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin // 
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L2_to_L3_when_lclFlip_not_match,assert property (@(posedge clock) pc[select] == L2 && lclFlip[select] != flip |-> pc[select] == L3),27,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin //
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L3; // 
+                    end
+                L3: begin //
+                        both[select] = 1; //
+                        pc[select] = L4; //
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_both_one_in_L3,assert property (@(posedge clock) pc[select] == L3 |-> both[select] == 1),29,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin // 
+                        both[select] = 1; //
+                        pc[select] = L4; //
+                    end 
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L3_to_L4,assert property (@(posedge clock) pc[select] == L3 |-> pc[select] == L4),31,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4; // 
+                    end
+                L4: begin //
+                        passctr = passctr + 1; //
+                        pc[select] = L5; //
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_passctr_increament_in_L4,assert property (@(posedge clock) pc[select] == L4 |-> passctr == passctr + 1),33,FAIL,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr //
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin // 
+                        passctr = passctr + 1; //
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L4_to_L5,assert property (@(posedge clock) pc[select] == L4 |-> pc[select] == L5),35,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5; // 
+                    end
+                L5: begin //
+                        passctr = passctr + 1; //
+                        pc[select] = L6; //
+                    end 
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_passctr_increament_in_L5,assert property (@(posedge clock) pc[select] == L5 |-> passctr == passctr + 1),37,FAIL,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr //
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin // 
+                        passctr = passctr + 1; //
+                        pc[select] = L6; 
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L5_to_L6,assert property (@(posedge clock) pc[select] == L5 |-> pc[select] == L6),39,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6; // 
+                    end
+                L6: begin //
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}]; //
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_ctr_flip_in_L6,"assert property (@(posedge clock) pc[select] == L6 |-> ctr[{select, lclFlip[select]}] == ~ctr[{select, lclFlip[select]}])",41,FAIL,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin // 
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}]; //
+                        pc[select] = L7; //
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L6_to_L7,assert property (@(posedge clock) pc[select] == L6 |-> pc[select] == L7),43,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7; // 
+                    end
+                L7: begin //
+                        if (both[select]) //
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L0; //
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_ctr_flip_when_both_one_in_L7,"assert property (@(posedge clock) pc[select] == L7 && both[select] == 1 |-> ctr[{select, ~lclFlip[select]}] == ~ctr[{select, ~lclFlip[select]}])",45,FAIL,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin // 
+                        if (both[select]) //
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; //
+                        pc[select] = L0; //
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L7_to_L0,assert property (@(posedge clock) pc[select] == L7 |-> pc[select] == L0),47,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7; 
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}]; // 
+                        pc[select] = L0; //
+                    end 
+            endcase //
+        end
+    end
+endmodule"
+check_ctr_unchanged_when_both_zero_in_L7,"assert property (@(posedge clock) pc[select] == L7 && both[select] == 0 |-> ctr[{select, ~lclFlip[select]}] == ctr[{select, ~lclFlip[select]}])",49,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select]) //
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end // 
+            endcase
+        end
+    end
+endmodule"
+check_select_range,assert property (@(posedge clock) select < NRDR),8,PASS,"module rdr_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select, //
+    input flip,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1], // 
+    output reg [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select < NRDR) begin
+            case (pc[select])
+                L0: if (passctr < PASSES) begin
+                        lclFlip[select] = flip;
+                        pc[select] = L1;
+                    end
+                L1: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L2;
+                    end
+                L2: if (lclFlip[select] == flip) begin
+                        both[select] = 0;
+                        pc[select] = L4;
+                    end else begin
+                        ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L3;
+                    end
+                L3: begin
+                        both[select] = 1;
+                        pc[select] = L4;
+                    end
+                L4: begin
+                        passctr = passctr + 1;
+                        pc[select] = L5;
+                    end
+                L5: begin
+                        passctr = passctr + 1;
+                        pc[select] = L6;
+                    end
+                L6: begin
+                        ctr[{select, lclFlip[select]}] = ~ctr[{select, lclFlip[select]}];
+                        pc[select] = L7;
+                    end
+                L7: begin
+                        if (both[select])
+                            ctr[{select, ~lclFlip[select]}] = ~ctr[{select, ~lclFlip[select]}];
+                        pc[select] = L0;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_select_valid,assert property (@(posedge clock) select >= NRDR),5,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select, //
+    output reg flip,
+    output reg [3:0] pcu, 
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin //
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L0,assert property (@(posedge clock) (pcu == L0) |-> (lclPassctr == passctr && pcu == L1)),12,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin // 
+            case (pcu) //
+                L0: if (passctr < PASSES) begin //
+                        lclPassctr = passctr; //
+                        pcu = L1; ..
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L1,assert property (@(posedge clock) (pcu == L1) |-> (lclPassctr == 255 && pcu == L2)),17,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin //
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end 
+                L1: begin //
+                        if (~lclPassctr[0]) //
+                            lclPassctr = 255; //
+                        pcu = L2; //
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L2,assert property (@(posedge clock) (pcu == L2) |-> (cpunum == 0 && pcu == L3)),21,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select, //
+    output reg flip,
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin //
+            case (pcu) //
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2; // 
+                    end
+                L2: begin //
+                        cpunum = 0; //
+                        pcu = L3; //
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L3,assert property (@(posedge clock) (pcu == L3) |-> (cpunum < NRDR ? pcu == L4 : pcu == L6)),25,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3; // 
+                    end
+                L3: if (cpunum < NRDR) //
+                        pcu = L4; //
+                    else //
+                        pcu = L6; //
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L4,"assert property (@(posedge clock) (pcu == L4) |-> (ctr[{cpunum, ~flip}] == 0 ? pcu == L5 : 1'b1))",28,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, //
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4; // 
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0) //
+                        pcu = L5; //
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L5,assert property (@(posedge clock) (pcu == L5) |-> (cpunum == cpunum + 1 && pcu == L3)),32,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5; // 
+                L5: begin //
+                        cpunum = cpunum + 1; //
+                        pcu = L3; //
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L6,assert property (@(posedge clock) (pcu == L6) |-> (flip == ~flip && pcu == L7)),35,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, //
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6; //
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3; 
+                    end
+                L6: begin
+                        flip = ~flip; //
+                        pcu = L7; //
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L7,assert property (@(posedge clock) (pcu == L7) |-> (cpunum == 0 && pcu == L8)),39,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7; // 
+                    end
+                L7: begin //
+                        cpunum = 0; //
+                        pcu = L8; //
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L8,assert property (@(posedge clock) (pcu == L8) |-> (cpunum < NRDR ? pcu == L9 : pcu == L0)),43,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, 
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8; // 
+                    end
+                L8: if (cpunum < NRDR) //
+                        pcu = L9; //
+                    else //
+                        pcu = L0; //
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L9,"assert property (@(posedge clock) (pcu == L9) |-> (ctr[{cpunum, ~flip}] == 0 ? pcu == L10 : 1'b1))",46,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, //
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9; // 
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0) //
+                        pcu = L10; //
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_case_L10,assert property (@(posedge clock) (pcu == L10) |-> (cpunum == cpunum + 1 && pcu == L8)),50,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10; // 
+                L10: begin //
+                        cpunum = cpunum + 1; //
+                        pcu = L8; //
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_flip_toggle,assert property (@(posedge clock) flip == ~flip),36,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, //
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end 
+                L6: begin //
+                        flip = ~flip; //
+                        pcu = L7; 
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_pcu_reset,assert property (@(posedge clock) pcu == L0),53,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu, //
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0; //
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8; 
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_ctr_value,"assert property (@(posedge clock) ctr[{cpunum, ~flip}] == 0)",29,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip, //
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else 
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0) //
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_passctr_value,assert property (@(posedge clock) passctr < PASSES),13,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr //
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu) // 
+                L0: if (passctr < PASSES) begin //
+                        lclPassctr = passctr;
+                        pcu = L1; 
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_cpunum_increment,assert property (@(posedge clock) cpunum == cpunum + 1),33,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin //
+                        cpunum = cpunum + 1; //
+                        pcu = L3; 
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_lclPassctr_value,assert property (@(posedge clock) (~lclPassctr[0] ? lclPassctr == 255 : 1'b1)),18,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr, //
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin // 
+                        if (~lclPassctr[0]) //
+                            lclPassctr = 255; //
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_cpunum_reset,assert property (@(posedge clock) cpunum == 0),40,PASS,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum, //
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin //
+                        cpunum = 0; //
+                        pcu = L3;
+                    end
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end // 
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR)
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_cpunum_limit,assert property (@(posedge clock) cpunum < NRDR),26,FAIL,"module upd_control #(parameter NRDR = 4) (
+    input clock,
+    input [SELMSB:0] select,
+    output reg flip,
+    output reg [3:0] pcu,
+    output reg [SELMSB:0] cpunum,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [7:0] lclPassctr,
+    input [7:0] passctr
+);
+    always @ (posedge clock) begin
+        if (select >= NRDR) begin
+            case (pcu)
+                L0: if (passctr < PASSES) begin
+                        lclPassctr = passctr;
+                        pcu = L1;
+                    end
+                L1: begin
+                        if (~lclPassctr[0])
+                            lclPassctr = 255;
+                        pcu = L2;
+                    end
+                L2: begin
+                        cpunum = 0;
+                        pcu = L3;
+                    end // 
+                L3: if (cpunum < NRDR)
+                        pcu = L4;
+                    else
+                        pcu = L6;
+                L4: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L5;
+                L5: begin
+                        cpunum = cpunum + 1;
+                        pcu = L3;
+                    end
+                L6: begin
+                        flip = ~flip;
+                        pcu = L7;
+                    end
+                L7: begin
+                        cpunum = 0;
+                        pcu = L8;
+                    end
+                L8: if (cpunum < NRDR) //
+                        pcu = L9;
+                    else
+                        pcu = L0;
+                L9: if (ctr[{cpunum, ~flip}] == 0)
+                        pcu = L10;
+                L10: begin
+                        cpunum = cpunum + 1;
+                        pcu = L8;
+                    end
+            endcase
+        end
+    end
+endmodule"
+check_flip_initialization,assert property (@(posedge clk) $init(flip) |-> flip == 0),13,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip, //
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i; // 
+    initial begin
+        flip = 0; //
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_passctr_initialization,assert property (@(posedge clk) $init(passctr) |-> passctr == 0),14,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr, //
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin // 
+        flip = 0;
+        passctr = 0; //
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0; //
+    end
+endmodule"
+check_cpunum_initialization,assert property (@(posedge clk) $init(cpunum) |-> cpunum == 0),15,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum, //
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0; // 
+        passctr = 0;
+        cpunum = 0; //
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_ctr_initialization,assert property (@(posedge clk) $init(ctr[i]) |-> ctr[i] == 0),17,FAIL,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0; // 
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0; //
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_lclFlip_initialization,assert property (@(posedge clk) $init(lclFlip[i]) |-> lclFlip[i] == 0),20,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1], //
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin // 
+            lclFlip[i] = 0; //
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_both_initialization,assert property (@(posedge clk) $init(both[i]) |-> both[i] == 0),21,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1], //
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0; 
+            both[i] = 0; //
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_pc_initialization,assert property (@(posedge clk) $init(pc[i]) |-> pc[i] == 0),22,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1], //
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0; 
+            pc[i] = 0; //
+        end
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_pcu_initialization,assert property (@(posedge clk) $init(pcu) |-> pcu == 0),24,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end // 
+        pcu = 0;
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_self_initialization,assert property (@(posedge clk) $init(self) |-> self == 0),25,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0; // 
+        self = 0;
+        lclPassctr = 0;
+    end
+endmodule"
+check_lclPassctr_initialization,assert property (@(posedge clk) $init(lclPassctr) |-> lclPassctr == 0),26,PASS,"module init_rcu #(parameter NRDR = 4, NRDR_ELEM = NRDR + NRDR) (
+    output reg flip,
+    output reg [7:0] passctr,
+    output reg [SELMSB:0] cpunum,
+    output reg [2:0] pc [0:NRDR-1],
+    output reg lclFlip [0:NRDR-1],
+    output reg both [0:NRDR-1],
+    output reg [3:0] pcu,
+    output reg ctr [0:NRDR_ELEM-1],
+    output reg [SELMSB:0] self,
+    output reg [7:0] lclPassctr
+);
+    integer i;
+    initial begin
+        flip = 0;
+        passctr = 0;
+        cpunum = 0;
+        for (i = 0; i < NRDR_ELEM; i = i + 1)
+            ctr[i] = 0;
+        for (i = 0; i < NRDR; i = i + 1) begin
+            lclFlip[i] = 0;
+            both[i] = 0;
+            pc[i] = 0;
+        end
+        pcu = 0;
+        self = 0; // 
+        lclPassctr = 0;
+    end
+endmodule"
