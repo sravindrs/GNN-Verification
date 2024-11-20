@@ -1,0 +1,1519 @@
+name,assertion_sv,line_number,expected_result,code
+check_inr_dout_when_spl,assert property (@(posedge clk) spl == 1 |-> inr == dout),7,PASS,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din,
+    input [31:0] tmp5,
+    output reg [31:0] dout, //
+    output reg [31:0] inr, //
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_inr_din_when_not_spl,assert property (@(posedge clk) spl == 0 |-> inr == din),9,PASS,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din, //
+    input [31:0] tmp5,
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl //
+); 
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout;
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_dout_tmp5,assert property (@(posedge clk) dout != tmp5),10,FAIL,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din,
+    input [31:0] tmp5, //
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+check_spl_spin,assert property (@(posedge clk) spl != spin),11,FAIL,"module control_update(
+    input clock,
+    input spin, //
+    input [31:0] din,
+    input [31:0] tmp5,
+    output reg [31:0] dout,
+    output reg [31:0] inr,
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_inr_dout_when_spl_fail,assert property (@(posedge clk) spl == 1 |-> inr != dout),7,FAIL,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din,
+    input [31:0] tmp5,
+    output reg [31:0] dout, //
+    output reg [31:0] inr, //
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_inr_din_when_not_spl_fail,assert property (@(posedge clk) spl == 0 |-> inr != din),9,FAIL,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din, //
+    input [31:0] tmp5,
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout;
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_dout_tmp5_pass,assert property (@(posedge clk) dout == tmp5),10,PASS,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din,
+    input [31:0] tmp5, //
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+check_spl_spin_pass,assert property (@(posedge clk) spl == spin),11,PASS,"module control_update(
+    input clock,
+    input spin, //
+    input [31:0] din,
+    input [31:0] tmp5,
+    output reg [31:0] dout,
+    output reg [31:0] inr,
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_inr_din,assert property (@(posedge clk) inr != din),9,FAIL,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din, //
+    input [31:0] tmp5,
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout;
+        else
+            inr = din; // This line causes the assertion to fail when spl is 0
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_inr_dout,assert property (@(posedge clk) inr != dout),7,FAIL,"module control_update(
+    input clock,
+    input spin,
+    input [31:0] din,
+    input [31:0] tmp5,
+    output reg [31:0] dout, //
+    output reg [31:0] inr, // 
+    output reg spl //
+);
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; // This line causes the assertion to fail when spl is 1
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+assertion_1,assert property (@(posedge clk) inr == tmp0),6,PASS,"module shift_operations(
+    input [31:0] inr, //
+    input [4:0] amount,
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4;
+
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_2,assert property (@(posedge clk) amount[0] |-> tmp1[30:0] == tmp0[31:1]),7,FAIL,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; //
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_3,assert property (@(posedge clk) !amount[0] |-> tmp1[30:0] == tmp0[30:0]),7,PASS,"module shift_operations(
+    input [31:0] inr, //
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; //
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_4,assert property (@(posedge clk) amount[1] |-> tmp2[29:0] == tmp1[31:2]),10,FAIL,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; //
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0]; //
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30]; //
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_5,assert property (@(posedge clk) !amount[1] |-> tmp2[29:0] == tmp1[29:0]),10,PASS,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; //
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0]; //
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30]; //
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_6,assert property (@(posedge clk) amount[2] |-> tmp3[27:0] == tmp2[31:4]),13,FAIL,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; //
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28]; //
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_7,assert property (@(posedge clk) !amount[2] |-> tmp3[27:0] == tmp2[27:0]),13,PASS,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0]; //
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30]; //
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; //
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28]; //
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_8,assert property (@(posedge clk) amount[3] |-> tmp4[23:0] == tmp3[31:8]),16,FAIL,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0]; //
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24]; //
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_9,assert property (@(posedge clk) !amount[3] |-> tmp4[23:0] == tmp3[23:0]),16,PASS,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; 
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28]; 
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0]; //
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24]; //
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+endmodule"
+assertion_10,assert property (@(posedge clk) amount[4] |-> tmp5[15:0] == tmp4[31:16]),19,FAIL,"module shift_operations(
+    input [31:0] inr,
+    input [4:0] amount, //
+    output [31:0] tmp5 //
+);
+    wire [31:0] tmp0, tmp1, tmp2, tmp3, tmp4; //
+
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0]; //
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16]; //
+endmodule"
+check_dout_initialization,assert property (@(posedge clk) $rose(dout == 0)),6,PASS,"module init_shift(
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    initial begin //
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+endmodule"
+check_inr_initialization,assert property (@(posedge clk) $rose(inr == 0)),7,PASS,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl
+);
+    initial begin //
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+endmodule"
+check_spl_initialization,assert property (@(posedge clk) $rose(spl == 0)),8,PASS,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr,
+    output reg spl //
+);
+    initial begin //
+        dout = 0;
+        inr = 0; 
+        spl = 0; //
+    end
+endmodule"
+check_dout_non_zero,assert property (@(posedge clk) $rose(dout != 0)),6,FAIL,"module init_shift(
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    initial begin // 
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+endmodule"
+check_inr_non_zero,assert property (@(posedge clk) $rose(inr != 0)),7,FAIL,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl
+);
+    initial begin //
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+endmodule"
+check_spl_non_zero,assert property (@(posedge clk) $rose(spl != 0)),8,FAIL,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr,
+    output reg spl //
+);
+    initial begin
+        dout = 0;
+        inr = 0; 
+        spl = 0; //
+    end
+endmodule"
+check_dout_change,assert property (@(posedge clk) $fell(dout)),6,FAIL,"module init_shift(
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    initial begin // 
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+endmodule"
+check_inr_change,assert property (@(posedge clk) $fell(inr)),7,FAIL,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr, //
+    output reg spl
+);
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+endmodule"
+check_spl_change,assert property (@(posedge clk) $fell(spl)),8,FAIL,"module init_shift(
+    output reg [31:0] dout,
+    output reg [31:0] inr,
+    output reg spl //
+);
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0; //
+    end
+endmodule"
+check_dout_high,assert property (@(posedge clk) $high(dout)),6,FAIL,"module init_shift(
+    output reg [31:0] dout, //
+    output reg [31:0] inr,
+    output reg spl
+);
+    initial begin //
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+endmodule"
+check_dout_initial,assert property (@(posedge clock) $init(dout) |-> dout == 0),14,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout; //
+    reg [31:0] dout; //
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4; // 
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0; // 
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+check_inr_initial,assert property (@(posedge clock) $init(inr) |-> inr == 0),15,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin //
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout; //
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_spl_initial,assert property (@(posedge clock) $init(spl) |-> spl == 0),16,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin //
+        dout = 0;
+        inr = 0;
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_dout_reg,assert property (@(posedge clock) $stable(dout)),18,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout; //
+    reg [31:0] dout; //
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5; //
+    initial begin
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0]; //
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16]; //
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+check_inr_reg,assert property (@(posedge clock) $stable(inr)),19,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount;
+    input [31:0] din; //
+    output [31:0] dout; //
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_spl_reg,assert property (@(posedge clock) $stable(spl)),20,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin; //
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_dout_update,assert property (@(posedge clock) $rose(dout) |-> dout == tmp5),32,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout; //
+    reg [31:0] dout; //
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin // 
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
+check_inr_update_spin,assert property (@(posedge clock) (spl==1) |-> inr == dout),30,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_inr_update_no_spin,assert property (@(posedge clock) (spl==0) |-> inr == din),31,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount;
+    input [31:0] din; //
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl) //
+            inr = dout;
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_spl_update,assert property (@(posedge clock) $rose(spl) |-> spl == spin),33,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin; //
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_tmp0,assert property (@(posedge clock) $rose(tmp0) |-> tmp0 == inr),18,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl;
+    wire [31:0] tmp0; //
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout; 
+        else
+            inr = din; 
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp1,assert property (@(posedge clock) (amount[0]==1) |-> tmp1[30:0] == tmp0[31:1]),20,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl;
+    wire [31:0] tmp0; //
+    wire [31:0] tmp1; //
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0; //
+        spl = 0;
+    end 
+    assign tmp0 = inr; //
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; //
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout; //
+        else
+            inr = din; //
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp2,assert property (@(posedge clock) (amount[1]==1) |-> tmp2[29:0] == tmp1[31:2]),22,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1; //
+    wire [31:0] tmp2; //
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0]; //
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30]; //
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp3,assert property (@(posedge clock) (amount[2]==1) |-> tmp3[27:0] == tmp2[31:4]),24,PASS,"module main(clock, spin, amount, din, dout);
+    input clock; //
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2; //
+    wire [31:0] tmp3; //
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; //
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28]; //
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin //
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp4,assert property (@(posedge clock) (amount[3]==1) |-> tmp4[23:0] == tmp3[31:8]),26,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4; //
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; 
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0]; // 
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp5,assert property (@(posedge clock) (amount[4]==1) |-> tmp5[15:0] == tmp4[31:16]),28,PASS,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4; //
+    wire [31:0] tmp5; //
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0]; //
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp1_fail,assert property (@(posedge clock) (amount[0]==0) |-> tmp1[30:0] == tmp0[31:1]),21,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0; //
+    wire [31:0] tmp1; //
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr; 
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0]; //
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp2_fail,assert property (@(posedge clock) (amount[1]==0) |-> tmp2[29:0] == tmp1[31:2]),23,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1; //
+    wire [31:0] tmp2; //
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31]; 
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0]; //
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp3_fail,assert property (@(posedge clock) (amount[2]==0) |-> tmp3[27:0] == tmp2[31:4]),25,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2; //
+    wire [31:0] tmp3; //
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30]; 
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0]; //
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp4_fail,assert property (@(posedge clock) (amount[3]==0) |-> tmp4[23:0] == tmp3[31:8]),27,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3; //
+    wire [31:0] tmp4; //
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28]; 
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0]; //
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_tmp5_fail,assert property (@(posedge clock) (amount[4]==0) |-> tmp5[15:0] == tmp4[31:16]),29,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount; //
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4; //
+    wire [31:0] tmp5; //
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24]; 
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16]; //
+    always @ (posedge clock) begin
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_spl_update_fail,assert property (@(posedge clock) $fell(spl) |-> spl == spin),33,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin; //
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0;
+        inr = 0;
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl) // 
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin; //
+    end
+endmodule"
+check_inr_update_spin_fail,assert property (@(posedge clock) (spl==0) |-> inr == dout),30,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout; //
+    reg [31:0] dout; 
+    reg [31:0] inr;
+    reg spl; //
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0; //
+        inr = 0; //
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_inr_update_no_spin_fail,assert property (@(posedge clock) (spl==1) |-> inr == din),31,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin; //
+    input [4:0] amount;
+    input [31:0] din; //
+    output [31:0] dout;
+    reg [31:0] dout;
+    reg [31:0] inr; //
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5;
+    initial begin
+        dout = 0; //
+        inr = 0; //
+        spl = 0; //
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16]; // 
+    always @ (posedge clock) begin
+        if (spl) //
+            inr = dout; //
+        else
+            inr = din;
+        dout = tmp5;
+        spl = spin;
+    end
+endmodule"
+check_dout_update_fail,assert property (@(posedge clock) $fell(dout) |-> dout == tmp5),32,FAIL,"module main(clock, spin, amount, din, dout);
+    input clock;
+    input spin;
+    input [4:0] amount;
+    input [31:0] din;
+    output [31:0] dout; //
+    reg [31:0] dout;
+    reg [31:0] inr;
+    reg spl;
+    wire [31:0] tmp0;
+    wire [31:0] tmp1;
+    wire [31:0] tmp2;
+    wire [31:0] tmp3;
+    wire [31:0] tmp4;
+    wire [31:0] tmp5; //
+    initial begin
+        dout = 0; //
+        inr = 0;
+        spl = 0;
+    end
+    assign tmp0 = inr;
+    assign tmp1[30:0] = amount[0] ? tmp0[31:1] : tmp0[30:0];
+    assign tmp1[31] = amount[0] ? tmp0[0] : tmp0[31];
+    assign tmp2[29:0] = amount[1] ? tmp1[31:2] : tmp1[29:0];
+    assign tmp2[31:30] = amount[1] ? tmp1[1:0] : tmp1[31:30];
+    assign tmp3[27:0] = amount[2] ? tmp2[31:4] : tmp2[27:0];
+    assign tmp3[31:28] = amount[2] ? tmp2[3:0] : tmp2[31:28];
+    assign tmp4[23:0] = amount[3] ? tmp3[31:8] : tmp3[23:0];
+    assign tmp4[31:24] = amount[3] ? tmp3[7:0] : tmp3[31:24];
+    assign tmp5[15:0] = amount[4] ? tmp4[31:16] : tmp4[15:0];
+    assign tmp5[31:16] = amount[4] ? tmp4[15:0] : tmp4[31:16];
+    always @ (posedge clock) begin 
+        if (spl)
+            inr = dout;
+        else
+            inr = din;
+        dout = tmp5; //
+        spl = spin;
+    end
+endmodule"
