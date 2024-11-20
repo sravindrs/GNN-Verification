@@ -1,0 +1,1220 @@
+name,assertion_sv,line_number,expected_result,code
+check_turn_initialization,assert property (@(posedge clock) $initstate |-> turn == X),18,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished;
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn; //
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY; //
+        turn = X; //
+        move = 0;
+    end
+    always @ (posedge clock) begin // 
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == EMPTY) begin //
+            b[move] = turn; //
+            turn = (turn == X) ? 0 : X; //
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_board_initialization,assert property (@(posedge clock) $initstate |-> b[0] == EMPTY),16,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished;
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i; //
+    initial begin //
+        for (i = 0; i < 9; i = i + 1) //
+            b[i] = EMPTY; //
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_move_validation,assert property (@(posedge clock) imove < 9 |-> move == imove),23,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove; //
+    output winX, winO, finished;
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0; //
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_invalid_move,assert property (@(posedge clock) imove >= 9 |-> move == 0),23,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove; //
+    output winX, winO, finished;
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0; //
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end 
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_turn_update,assert property (@(posedge clock) turn == X |-> turn == O),28,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn; //
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X; //
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin //
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X; //
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); 
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_winX_condition,assert property (@(posedge clock) b[0] == X && b[1] == X && b[2] == X |-> winX == 1),33,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1; //
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) | //
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); 
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_winO_condition,assert property (@(posedge clock) b[0] == O && b[1] == O && b[2] == O |-> winO == 1),37,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) | //
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY & 
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_game_finished,assert property (@(posedge clock) winX == 1 | winO == 1 |-> finished == 1),41,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); //
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); //
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; //
+endmodule"
+check_game_not_finished,assert property (@(posedge clock) winX == 0 && winO == 0 && b[0] == EMPTY |-> finished == 0),41,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); //
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); //
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; //
+endmodule"
+check_empty_move,assert property (@(posedge clock) b[move] != EMPTY |-> move == 0),26,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove; //
+    output winX, winO, finished;
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY; //
+        turn = X;
+        move = 0; //
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == EMPTY) begin //
+            b[move] = turn; //
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) | 
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_turn_update_O,assert property (@(posedge clock) turn == O |-> turn == X),28,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn; //
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X; //
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X; //
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); // 
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_diagonal_winX,assert property (@(posedge clock) b[0] == X && b[4] == X && b[8] == X |-> winX == 1),34,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X | //
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); 
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_diagonal_winO,assert property (@(posedge clock) b[2] == O && b[4] == O && b[6] == O |-> winO == 1),38,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2; //
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O | //
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; // 
+endmodule"
+check_non_diagonal_winX,assert property (@(posedge clock) b[3] == X && b[4] == X && b[5] == X |-> winX == 0),34,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2; //
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); //
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); 
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_non_diagonal_winO,assert property (@(posedge clock) b[7] == O && b[8] == O |-> winO == 0),38,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2; //
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); //
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; 
+endmodule"
+check_board_full,assert property (@(posedge clock) b[0] != EMPTY && b[1] != EMPTY && b[2] != EMPTY && b[3] != EMPTY && b[4] != EMPTY && b[5] != EMPTY && b[6] != EMPTY && b[7] != EMPTY && b[8] != EMPTY |-> finished == 1),42,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; //
+endmodule"
+check_board_empty,assert property (@(posedge clock) b[0] == EMPTY && b[1] == EMPTY && b[2] == EMPTY && b[3] == EMPTY && b[4] == EMPTY && b[5] == EMPTY && b[6] == EMPTY && b[7] == EMPTY && b[8] == EMPTY |-> finished == 0),42,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY; //
+endmodule"
+check_winX_false,assert property (@(posedge clock) b[0] == X && b[1] == X && b[2] == EMPTY |-> winX == 0),33,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished;
+    parameter EMPTY = 0;
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8];
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O); 
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY & //
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_winO_false,assert property (@(posedge clock) b[3] == O && b[4] == O && b[5] == EMPTY |-> winO == 0),37,FAIL,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished; //
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move;
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X;
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X);
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY & //
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_turn_not_changed,assert property (@(posedge clock) b[move] != EMPTY |-> turn == X),28,PASS,"module main(clock, imove, winX, winO, finished);
+    input clock;
+    input [3:0] imove;
+    output winX, winO, finished;
+    parameter EMPTY = 0; //
+    parameter X = 1;
+    parameter O = 2;
+    reg [1:0] b[0:8]; //
+    reg [1:0] turn;
+    reg [3:0] move; //
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = EMPTY;
+        turn = X;
+        move = 0;
+    end
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == EMPTY) begin //
+            b[move] = turn;
+            turn = (turn == X) ? 0 : X; //
+        end
+    end
+    assign winX = b[0]==X & (b[1]==X & b[2]==X | b[3]==X & b[6]==X) |
+                  b[8]==X & (b[7]==X & b[6]==X | b[5]==X & b[2]==X) |
+                  b[4]==X & (b[0]==X & b[8]==X | b[2]==X & b[6]==X |
+                             b[1]==X & b[7]==X | b[3]==X & b[5]==X); 
+
+    assign winO = b[0]==O & (b[1]==O & b[2]==O | b[3]==O & b[6]==O) |
+                  b[8]==O & (b[7]==O & b[6]==O | b[5]==O & b[2]==O) |
+                  b[4]==O & (b[0]==O & b[8]==O | b[2]==O & b[6]==O |
+                             b[1]==O & b[7]==O | b[3]==O & b[5]==O);
+
+    assign finished = winX | winO |
+                      b[0]!=EMPTY & b[1]!=EMPTY & b[2]!=EMPTY &
+                      b[3]!=EMPTY & b[4]!=EMPTY & b[5]!=EMPTY &
+                      b[6]!=EMPTY & b[7]!=EMPTY & b[8]!=EMPTY;
+endmodule"
+check_winX_not_winO,assert property (@(posedge clk) winX |-> ~winO),5,PASS,"module win_logic(
+    input [1:0] b[0:8],
+    output winX, //
+    output winO //
+); 
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1); //
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2); //
+endmodule"
+check_winO_not_winX,assert property (@(posedge clk) winO |-> ~winX),5,PASS,"module win_logic(
+    input [1:0] b[0:8],
+    output winX, //
+    output winO //
+); 
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1); //
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2); //
+endmodule"
+check_winX_b0_b1_b2,assert property (@(posedge clk) b[0]==1 & b[1]==1 & b[2]==1 |-> winX),6,PASS,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX, //
+    output winO
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) | // 
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_winO_b0_b1_b2,assert property (@(posedge clk) b[0]==2 & b[1]==2 & b[2]==2 |-> winO),12,PASS,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX,
+    output winO
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) | //
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) | 
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_not_winX_b0_b1_b2,assert property (@(posedge clk) ~winX |-> b[0]!=1 | b[1]!=1 | b[2]!=1),6,FAIL,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX, //
+    output winO
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) | // 
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_not_winO_b0_b1_b2,assert property (@(posedge clk) ~winO |-> b[0]!=2 | b[1]!=2 | b[2]!=2),12,FAIL,"module win_logic(
+    input [1:0] b[0:8],
+    output winX,
+    output winO //
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) | //
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) | 
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_winX_b8_b7_b6,assert property (@(posedge clk) b[8]==1 & b[7]==1 & b[6]==1 |-> winX),6,PASS,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX, //
+    output winO
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) | 
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) | //
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_winO_b8_b7_b6,assert property (@(posedge clk) b[8]==2 & b[7]==2 & b[6]==2 |-> winO),12,PASS,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX,
+    output winO //
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) | // 
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_not_winX_b8_b7_b6,assert property (@(posedge clk) ~winX |-> b[8]!=1 | b[7]!=1 | b[6]!=1),6,FAIL,"module win_logic(
+    input [1:0] b[0:8], //
+    output winX, //
+    output winO
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) | 
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) | //
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) |
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_not_winO_b8_b7_b6,assert property (@(posedge clk) ~winO |-> b[8]!=2 | b[7]!=2 | b[6]!=2),12,FAIL,"module win_logic(
+    input [1:0] b[0:8],
+    output winX,
+    output winO //
+);
+    assign winX = b[0]==1 & (b[1]==1 & b[2]==1 | b[3]==1 & b[6]==1) |
+                  b[8]==1 & (b[7]==1 & b[6]==1 | b[5]==1 & b[2]==1) |
+                  b[4]==1 & (b[0]==1 & b[8]==1 | b[2]==1 & b[6]==1 |
+                             b[1]==1 & b[7]==1 | b[3]==1 & b[5]==1);
+
+    assign winO = b[0]==2 & (b[1]==2 & b[2]==2 | b[3]==2 & b[6]==2) |
+                  b[8]==2 & (b[7]==2 & b[6]==2 | b[5]==2 & b[2]==2) | // 
+                  b[4]==2 & (b[0]==2 & b[8]==2 | b[2]==2 & b[6]==2 |
+                             b[1]==2 & b[7]==2 | b[3]==2 & b[5]==2);
+endmodule"
+check_b_initialization,assert property (@(posedge clk) b[0] == 0),7,PASS,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn,
+    output reg [3:0] move
+);
+    integer i;
+    initial begin 
+        for (i = 0; i < 9; i = i + 1) //
+            b[i] = 0; //
+        turn = 1; 
+        move = 0;
+    end
+endmodule"
+check_turn_initialization,assert property (@(posedge clk) turn == 1),9,PASS,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn, //
+    output reg [3:0] move
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1; //
+        move = 0;
+    end
+endmodule"
+check_move_initialization,assert property (@(posedge clk) move == 0),10,PASS,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1;
+        move = 0; //
+    end
+endmodule"
+check_b_not_initializing,assert property (@(posedge clk) b[0] != 1),7,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn,
+    output reg [3:0] move
+);
+    integer i;
+    initial begin 
+        for (i = 0; i < 9; i = i + 1) //
+            b[i] = 0; //
+        turn = 1; 
+        move = 0;
+    end
+endmodule"
+check_turn_not_initializing,assert property (@(posedge clk) turn != 0),9,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn, //
+    output reg [3:0] move
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1; //
+        move = 0;
+    end
+endmodule"
+check_move_not_initializing,assert property (@(posedge clk) move != 1),10,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1; 
+        move = 0; //
+    end
+endmodule"
+check_b_initializing_to_2,assert property (@(posedge clk) b[0] == 2),7,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn,
+    output reg [3:0] move
+);
+    integer i;
+    initial begin // 
+        for (i = 0; i < 9; i = i + 1) //
+            b[i] = 0; //
+        turn = 1; 
+        move = 0;
+    end
+endmodule"
+check_turn_initializing_to_2,assert property (@(posedge clk) turn == 2),9,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn, //
+    output reg [3:0] move
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1; //
+        move = 0;
+    end
+endmodule"
+check_move_initializing_to_2,assert property (@(posedge clk) move == 2),10,FAIL,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    integer i;
+    initial begin
+        for (i = 0; i < 9; i = i + 1)
+            b[i] = 0; 
+        turn = 1; 
+        move = 0; //
+    end
+endmodule"
+check_b_initialization_for_last_index,assert property (@(posedge clk) b[8] == 0),7,PASS,"module init_tic_tac_toe(
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn,
+    output reg [3:0] move
+);
+    integer i;
+    initial begin 
+        for (i = 0; i < 9; i = i + 1) //
+            b[i] = 0; //
+        turn = 1; 
+        move = 0;
+    end
+endmodule"
+check_valid_move,assert property (@(posedge clock) imove < 9 |-> move == imove),5,PASS,"module move_handling(
+    input clock,
+    input [3:0] imove, //
+    input finished,
+    output reg [1:0] b[0:8], 
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin 
+            b[move] = turn;
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_invalid_move,assert property (@(posedge clock) imove >= 9 |-> move == 0),5,PASS,"module move_handling(
+    input clock,
+    input [3:0] imove, //
+    input finished,
+    output reg [1:0] b[0:8], 
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin 
+            b[move] = turn;
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_move_not_finished,assert property (@(posedge clock) !finished |-> b[move] == turn),7,FAIL,"module move_handling(
+    input clock,
+    input [3:0] imove,
+    input finished, //
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn, //
+    output reg [3:0] move // 
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin //
+            b[move] = turn; //
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_move_finished,assert property (@(posedge clock) finished |-> b[move] != turn),7,PASS,"module move_handling(
+    input clock,
+    input [3:0] imove,
+    input finished, //
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn, //
+    output reg [3:0] move // 
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin // 
+            b[move] = turn; //
+            turn = (turn == 1) ? 0 : 1;
+        end
+    end
+endmodule"
+check_turn_toggle_X_to_O,assert property (@(posedge clock) turn == 1 |-> turn == 0),8,FAIL,"module move_handling(
+    input clock,
+    input [3:0] imove,
+    input finished,
+    output reg [1:0] b[0:8],
+    output reg [1:0] turn, //
+    output reg [3:0] move
+);  
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == 0) begin //
+            b[move] = turn;
+            turn = (turn == 1) ? 0 : 1; //
+        end
+    end
+endmodule"
+check_turn_toggle_O_to_X,assert property (@(posedge clock) turn == 0 |-> turn == 1),8,FAIL,"module move_handling(
+    input clock,
+    input [3:0] imove, //
+    input finished, //
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn, //
+    output reg [3:0] move 
+); 
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == 0) begin // 
+            b[move] = turn; 
+            turn = (turn == 1) ? 0 : 1; // 
+        end
+    end
+endmodule"
+check_move_on_empty_spot,assert property (@(posedge clock) b[move] == 0 |-> b[move] == turn),7,FAIL,"module move_handling(
+    input clock,
+    input [3:0] imove, 
+    input finished, //
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn, //
+    output reg [3:0] move // 
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; 
+        if (!finished && b[move] == 0) begin // 
+            b[move] = turn; //
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_no_move_on_filled_spot,assert property (@(posedge clock) b[move] != 0 |-> b[move] != turn),7,PASS,"module move_handling(
+    input clock,
+    input [3:0] imove,
+    input finished,
+    output reg [1:0] b[0:8], //
+    output reg [1:0] turn, //
+    output reg [3:0] move // 
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0;
+        if (!finished && b[move] == 0) begin // 
+            b[move] = turn; //
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_move_value,assert property (@(posedge clock) move == imove |-> imove < 9),5,PASS,"module move_handling(
+    input clock,
+    input [3:0] imove, //
+    input finished,
+    output reg [1:0] b[0:8], 
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin 
+            b[move] = turn;
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
+check_invalid_move_value,assert property (@(posedge clock) move != imove |-> imove >= 9),5,FAIL,"module move_handling(
+    input clock,
+    input [3:0] imove, //
+    input finished,
+    output reg [1:0] b[0:8], // 
+    output reg [1:0] turn,
+    output reg [3:0] move //
+);
+    always @ (posedge clock) begin
+        move = (imove < 9) ? imove : 0; //
+        if (!finished && b[move] == 0) begin 
+            b[move] = turn;
+            turn = (turn == 1) ? 0 : 1; 
+        end
+    end
+endmodule"
