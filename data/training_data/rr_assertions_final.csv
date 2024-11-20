@@ -1,0 +1,1161 @@
+name,assertion_sv,line_number,expected_result,code
+check_ack0_req0,assert property (@(posedge clock) ~req0 |-> ack0 == 0),8,PASS,"module ack_generation(
+    input clock,
+    input req0, //
+    input req1,
+    input robin,
+    output reg ack0, //
+    output reg ack1
+); // 
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack0_req1,assert property (@(posedge clock) ~req1 |-> ack0 == 1),11,PASS,"module ack_generation(
+    input clock,
+    input req0,
+    input req1, //
+    input robin,
+    output reg ack0, //
+    output reg ack1
+);
+    always @ (posedge clock) begin
+        if (~req0) // 
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1) //
+            ack1 = 0; // 
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack0_ack1_robin,assert property (@(posedge clock) (~ack0 & ~ack1) |-> ack0 == ~robin),14,PASS,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin, //
+    output reg ack0, //
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1; // 
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin; //
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack0_ack0,assert property (@(posedge clock) ack0 |-> ack0 == ~ack0),17,FAIL,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin,
+    output reg ack0, //
+    output reg ack1
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin;    
+        else // 
+            ack0 = ~ack0; //    
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack1_req1,assert property (@(posedge clock) ~req1 |-> ack1 == 0),20,PASS,"module ack_generation(
+    input clock,
+    input req0,
+    input req1, //
+    input robin,
+    output reg ack0, //
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else //
+            ack0 = ~ack0;     
+        if (~req1) //
+            ack1 = 0; //        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack1_req0,assert property (@(posedge clock) ~req0 |-> ack1 == 1),23,PASS,"module ack_generation(
+    input clock,
+    input req0, //
+    input req1,
+    input robin,
+    output reg ack0,
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0) // 
+            ack1 = 1; //    
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack1_ack0_ack1_robin,assert property (@(posedge clock) (~ack0 & ~ack1) |-> ack1 == robin),26,PASS,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin, //
+    output reg ack0, //
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1) //
+            ack1 = robin; // 
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack1_ack1,assert property (@(posedge clock) ack1 |-> ack1 == ~ack1),29,FAIL,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin,
+    output reg ack0,
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;        
+        else if (~req1)
+            ack0 = 1;         
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0;        
+        else if (~req0)
+            ack1 = 1;        
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else //
+            ack1 = ~ack1; //
+    end 
+endmodule"
+check_ack0_ack1_simultaneous,assert property (@(posedge clock) ack0 & ack1 |-> 0),30,PASS,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin,
+    output reg ack0, //
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0; //      
+        else if (~req1)
+            ack0 = 1; //  
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1)
+            ack1 = 0; //      
+        else if (~req0)
+            ack1 = 1; //       
+        else if (~ack0 & ~ack1)
+            ack1 = robin;     
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack0_ack1_mutual_exclusion,assert property (@(posedge clock) ack0 |-> ~ack1),31,FAIL,"module ack_generation(
+    input clock,
+    input req0,
+    input req1,
+    input robin,
+    output reg ack0, //
+    output reg ack1 //
+);
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; // 
+        else if (~req1) //
+            ack0 = 1; //        
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;    
+        else
+            ack0 = ~ack0;     
+        if (~req1) //
+            ack1 = 0; //        
+        else if (~req0) //
+            ack1 = 1; //        
+        else if (~ack0 & ~ack1) 
+            ack1 = robin;      
+        else
+            ack1 = ~ack1;     
+    end
+endmodule"
+check_ack0_when_req0_inactive,assert property (@(posedge clock) (!req0) |-> (!ack0)),10,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin 
+        if (~req0)
+            ack0 = 0; //
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; //
+        req1 = ir1;
+    end
+endmodule"
+check_ack0_when_req1_inactive,assert property (@(posedge clock) (!req1) |-> (ack0)),12,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1; //
+    end
+endmodule"
+check_ack0_when_both_ack_inactive,assert property (@(posedge clock) (!ack0 && !ack1) |-> (ack0 == !robin)),14,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1; 
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin; //
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1;
+    end
+endmodule"
+check_ack1_when_req1_inactive,assert property (@(posedge clock) (!req1) |-> (!ack1)),19,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; 
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; 
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1) //
+            ack1 = 0; //
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1; 
+    end
+endmodule"
+check_ack1_when_req0_inactive,assert property (@(posedge clock) (!req0) |-> (ack1)),21,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0) //
+            ack1 = 1; //
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; //
+        req1 = ir1;
+    end
+endmodule"
+check_ack1_when_both_ack_inactive,assert property (@(posedge clock) (!ack0 && !ack1) |-> (ack1 == robin)),23,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0; 
+        else if (~req1)
+            ack0 = 1; 
+        else if (~ack0 & ~ack1) 
+            ack0 = ~robin; 
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0; 
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1) //
+            ack1 = robin; //
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1;
+    end
+endmodule"
+check_robin_toggle,assert property (@(posedge clock) (req0 && req1 && !ack0 && !ack1) |-> (robin == !robin)),28,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1) 
+            ack0 = ~robin; 
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1) 
+            ack1 = robin; 
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; 
+        req1 = ir1; 
+    end
+endmodule"
+check_req0_update,assert property (@(posedge clock) (req0 == ir0)),33,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end 
+    always @ (posedge clock) begin //
+        req0 = ir0; //
+        req1 = ir1; 
+    end
+endmodule"
+check_req1_update,assert property (@(posedge clock) (req1 == ir1)),34,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin // 
+        req0 = ir0; 
+        req1 = ir1; //
+    end
+endmodule"
+check_ack0_ack1_mutual_exclusion,assert property (@(posedge clock) (ack0 && ack1) |-> 0),15,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin; //
+        else
+            ack0 = ~ack0; //
+    end
+    always @ (posedge clock) begin
+        if (~req1) //
+            ack1 = 0; //
+        else if (~req0) //
+            ack1 = 1; //
+        else if (~ack0 & ~ack1)
+            ack1 = robin; //
+        else
+            ack1 = ~ack1; //
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1;
+    end
+endmodule"
+check_ack0_when_both_req_active,assert property (@(posedge clock) (req0 && req1) |-> (ack0 == !robin)),14,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin; //
+        else
+            ack0 = ~ack0; 
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; 
+        req1 = ir1; 
+    end
+endmodule"
+check_ack1_when_both_req_active,assert property (@(posedge clock) (req0 && req1) |-> (ack1 == robin)),23,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0; //
+        else if (~req0)
+            ack1 = 1; //
+        else if (~ack0 & ~ack1) //
+            ack1 = robin; //
+        else
+            ack1 = ~ack1; //
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; 
+        req1 = ir1; 
+    end
+endmodule"
+check_robin_when_both_req_inactive,assert property (@(posedge clock) (!req0 && !req1) |-> (robin == robin)),28,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; 
+        req1 = ir1;
+    end
+endmodule"
+check_req1_when_ack1_active,assert property (@(posedge clock) (ack1) |-> (req1)),21,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; 
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1) //
+            ack1 = 0; //
+        else if (~req0) //
+            ack1 = 1; //
+        else if (~ack0 & ~ack1)
+            ack1 = robin; 
+        else
+            ack1 = ~ack1; 
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1; 
+    end
+endmodule"
+check_req0_when_ack0_active,assert property (@(posedge clock) (ack0) |-> (req0)),12,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin; 
+        else
+            ack0 = ~ack0; 
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; //
+        req1 = ir1;
+    end
+endmodule"
+check_ack0_when_req0_active,assert property (@(posedge clock) (req0) |-> (ack0)),11,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1) //
+            ack0 = ~robin; 
+        else //
+            ack0 = ~ack0; //
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0) 
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) 
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0; 
+        req1 = ir1; 
+    end
+endmodule"
+check_ack1_when_req1_active,assert property (@(posedge clock) (req1) |-> (ack1)),20,FAIL,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin;
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin // 
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1;
+    end
+endmodule"
+check_req0_when_both_req_active,assert property (@(posedge clock) (req0 && req1) |-> (req0)),33,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin;
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end 
+    always @ (posedge clock) begin //
+        req0 = ir0; //
+        req1 = ir1; //
+    end
+endmodule"
+check_req1_when_both_req_active,assert property (@(posedge clock) (req0 && req1) |-> (req1)),34,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1; //
+    output ack0, ack1;
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0;
+        req0 = ir0; req1 = ir1; //
+    end
+    always @ (posedge clock) begin
+        if (~req0)
+            ack0 = 0;
+        else if (~req1)
+            ack0 = 1;
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0;
+    end
+    always @ (posedge clock) begin
+        if (~req1)
+            ack1 = 0;
+        else if (~req0)
+            ack1 = 1;
+        else if (~ack0 & ~ack1)
+            ack1 = robin;
+        else
+            ack1 = ~ack1;
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin;
+    end
+    always @ (posedge clock) begin //
+        req0 = ir0; //
+        req1 = ir1; //
+    end
+endmodule"
+check_ack0_when_ack1_active,assert property (@(posedge clock) (ack1) |-> (!ack0)),15,PASS,"module main(clock,ir0,ir1,ack0,ack1);
+    input  clock;
+    input  ir0, ir1;
+    output ack0, ack1; //
+    reg    req0, req1, ack0, ack1, robin; //
+    initial begin
+        ack0 = 0; ack1 = 0; robin = 0; //
+        req0 = ir0; req1 = ir1;
+    end
+    always @ (posedge clock) begin
+        if (~req0) //
+            ack0 = 0; //
+        else if (~req1) //
+            ack0 = 1; //
+        else if (~ack0 & ~ack1)
+            ack0 = ~robin;
+        else
+            ack0 = ~ack0; //
+    end
+    always @ (posedge clock) begin
+        if (~req1) //
+            ack1 = 0; //
+        else if (~req0) //
+            ack1 = 1; //
+        else if (~ack0 & ~ack1)
+            ack1 = robin; 
+        else
+            ack1 = ~ack1; //
+    end
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1)
+            robin = ~robin; 
+    end
+    always @ (posedge clock) begin
+        req0 = ir0;
+        req1 = ir1;
+    end
+endmodule"
+check_robin_toggle,assert property (@(posedge clock) req0 & req1 & ~ack0 & ~ack1 |-> $past(robin) != robin),7,PASS,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, //
+    input ack1, //
+    output reg robin // 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+endmodule"
+check_robin_unchange,assert property (@(posedge clock) !(req0 & req1 & ~ack0 & ~ack1) |-> $past(robin) == robin),7,PASS,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, //
+    input ack1, //
+    output reg robin // 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+endmodule"
+check_req0_req1,assert property (@(posedge clock) req0 == 1 |-> req1 == 1),7,FAIL,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1,
+    input ack0,
+    input ack1,
+    output reg robin 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  
+    end
+endmodule"
+check_ack0_ack1,assert property (@(posedge clock) ack0 == 1 |-> ack1 == 1),7,FAIL,"module round_robin_control(
+    input clock,
+    input req0,
+    input req1,
+    input ack0, //
+    input ack1,
+    output reg robin 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  
+    end
+endmodule"
+check_req_ack0,assert property (@(posedge clock) req0 == 1 |-> ack0 == 0),7,FAIL,"module round_robin_control(
+    input clock,
+    input req0,
+    input req1, //
+    input ack0,
+    input ack1,
+    output reg robin
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  
+    end
+endmodule"
+check_req_ack1,assert property (@(posedge clock) req1 == 1 |-> ack1 == 0),7,FAIL,"module round_robin_control(
+    input clock,
+    input req0,
+    input req1, //
+    input ack0,
+    input ack1, //
+    output reg robin 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  
+    end
+endmodule"
+check_req0_robin,assert property (@(posedge clock) req0 == 1 & req1 == 1 & ~ack0 & ~ack1 |-> $past(robin) == 0),7,FAIL,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, //
+    input ack1, //
+    output reg robin //
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  //
+    end
+endmodule"
+check_no_req_robin,assert property (@(posedge clock) req0 == 0 & req1 == 0 |-> $past(robin) == robin),7,PASS,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, 
+    input ack1, 
+    output reg robin //
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin;  //
+    end
+endmodule"
+check_only_req0,assert property (@(posedge clock) req0 == 1 & req1 == 0 & ~ack0 & ~ack1 |-> $past(robin) == robin),7,PASS,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, //
+    input ack1, //
+    output reg robin // 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+endmodule"
+check_only_req1,assert property (@(posedge clock) req0 == 0 & req1 == 1 & ~ack0 & ~ack1 |-> $past(robin) == robin),7,PASS,"module round_robin_control(
+    input clock,
+    input req0, //
+    input req1, //
+    input ack0, //
+    input ack1, //
+    output reg robin // 
+);
+    always @ (posedge clock) begin
+        if (req0 & req1 & ~ack0 & ~ack1) //
+            robin = ~robin; //
+    end
+endmodule"
