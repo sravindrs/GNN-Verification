@@ -1,0 +1,901 @@
+name,assertion_sv,line_number,expected_result,code
+check_transition_I1_to_R1,assert property (@(posedge clk) state == I1 && req1 |-> state == R1),11,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0; //
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state; 
+    initial state = I1; //
+    always @ (posedge clk) begin
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; //
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_I1_to_R2,assert property (@(posedge clk) state == I1 && req2 |-> state == R2),11,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0; //
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3; //
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state; 
+    initial state = I1; //
+    always @ (posedge clk) begin
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2; //
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_R1_to_A1,assert property (@(posedge clk) state == R1 && ack0 |-> state == A1),12,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;  //
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2; //
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state;
+    initial state = I1; // 
+    always @ (posedge clk) begin
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1; //
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1; 
+    assign ack2 = state == A2;
+endmodule"
+check_transition_A1_to_I2,assert property (@(posedge clk) state == A1 && !req1 |-> state == I2),13,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1; //
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state;
+    initial state = I1; //
+    always @ (posedge clk) begin 
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2; //
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_I2_to_R2,assert property (@(posedge clk) state == I2 && req2 |-> state == R2),14,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1; //
+    parameter R1 = 2;
+    parameter R2 = 3; //
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state;
+    initial state = I1; //
+    always @ (posedge clk) begin
+        case (state) // 
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; //
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_I2_to_R1,assert property (@(posedge clk) state == I2 && req1 |-> state == R1),14,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1; //
+    parameter R1 = 2; //
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state;
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state) // 
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; //
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_R2_to_A2,assert property (@(posedge clk) state == R2 && ack0 |-> state == A2),15,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3; //
+    parameter A1 = 4;
+    parameter A2 = 5; //
+    reg state;
+    initial state = I1; //
+    always @ (posedge clk) begin
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2; 
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2; //
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_transition_A2_to_I1,assert property (@(posedge clk) state == A2 && !req2 |-> state == I1),16,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2; //
+    output req0, ack1, ack2;
+    parameter I1 = 0; //
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5; //
+    reg state; 
+    initial state = I1;  //
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1; //
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_req0_assertion,assert property (@(posedge clk) (state == R1 || state == R2 || state == A1 || state == A2) |-> req0),18,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; // 
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase //
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2; //
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_ack1_assertion,assert property (@(posedge clk) state == A1 |-> ack1),19,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2; //
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2; 
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1; //
+    assign ack2 = state == A2;
+endmodule"
+check_ack2_assertion,assert property (@(posedge clk) state == A2 |-> ack2),20,PASS,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5; //
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state) //
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1; // 
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2; //
+endmodule"
+check_invalid_transition_I1_to_A1,assert property (@(posedge clk) state == I1 |-> state != A1),12,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0; //
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1; // 
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2; //
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_transition_R1_to_A2,assert property (@(posedge clk) state == R1 |-> state != A2),13,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2; //
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin 
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1; //
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_transition_A1_to_A2,assert property (@(posedge clk) state == A1 |-> state != A2),14,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1; //
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state) // 
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2; //
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_transition_I2_to_A1,assert property (@(posedge clk) state == I2 |-> state != A1),15,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1; //
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2; // 
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; //
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_transition_R2_to_A1,assert property (@(posedge clk) state == R2 |-> state != A1),16,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3; //
+    parameter A1 = 4; //
+    parameter A2 = 5;
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2; //
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_transition_A2_to_A1,assert property (@(posedge clk) state == A2 |-> state != A1),17,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2;
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4; //
+    parameter A2 = 5; //
+    reg state; //
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2; 
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1; //
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_req0_assertion,assert property (@(posedge clk) state == I1 |-> !req0),18,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2;
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state;
+    initial state = I1; //
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2; //
+            R1: if (ack0)  state = A1;
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1; // 
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_ack1_assertion,assert property (@(posedge clk) state == R1 |-> !ack1),19,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2; //
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state;
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1; //
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2; 
+            A2: if (!req2) state = I1;
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+check_invalid_ack2_assertion,assert property (@(posedge clk) state == R1 |-> !ack2),20,FAIL,"module cell (clk, req1, req2, ack1, ack2, req0, ack0);
+    input clk;
+    input ack0, req1, req2;
+    output req0, ack1, ack2; //
+    parameter I1 = 0;
+    parameter I2 = 1;
+    parameter R1 = 2; //
+    parameter R2 = 3;
+    parameter A1 = 4;
+    parameter A2 = 5;
+    reg state;
+    initial state = I1;
+    always @ (posedge clk) begin
+        case (state)
+            I1: if (req1)  state = R1; else if (req2) state = R2;
+            R1: if (ack0)  state = A1; //
+            A1: if (!req1) state = I2;
+            I2: if (req2)  state = R2; else if (req1) state = R1;
+            R2: if (ack0)  state = A2;
+            A2: if (!req2) state = I1; 
+        endcase
+    end
+    assign req0 = state == R1 || state == R2 || state == A1 || state == A2;
+    assign ack1 = state == A1;
+    assign ack2 = state == A2;
+endmodule"
+idle_to_requesting_transition,assert property (@(posedge clk) state == idle |-> state == requesting),11,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin 
+        case (state) //
+            idle:       if (choice) state = requesting; //
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+requesting_to_locking_transition,assert property (@(posedge clk) state == requesting |-> state == locking),12,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; 
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin
+        case (state) // 
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+locking_to_idle_transition,assert property (@(posedge clk) state == locking |-> state == idle),13,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting; 
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+idle_stays_idle,assert property (@(posedge clk) state == idle |-> state == idle),11,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin 
+        case (state) //
+            idle:       if (choice) state = requesting; //
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+requesting_stays_requesting,assert property (@(posedge clk) state == requesting |-> state == requesting),12,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) // 
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+locking_stays_locking,assert property (@(posedge clk) state == locking |-> state == locking),13,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting; 
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+requesting_to_idle_transition,assert property (@(posedge clk) state == requesting |-> state == idle),12,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req; 
+    parameter idle = 0; //
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) // 
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+locking_to_requesting_transition,assert property (@(posedge clk) state == locking |-> state == requesting),13,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1; //
+    parameter locking = 2; //
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+idle_to_locking_transition,assert property (@(posedge clk) state == idle |-> state == locking),11,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state; 
+    initial state = idle; //
+    always @ (posedge clk) begin 
+        case (state) //
+            idle:       if (choice) state = requesting; //
+            requesting: if (ack)    state = locking; 
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+req_when_state_idle,assert property (@(posedge clk) state == idle |-> req == 0),16,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin
+        case (state)
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+req_when_state_requesting,assert property (@(posedge clk) state == requesting |-> req == 1),16,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+req_when_state_locking,assert property (@(posedge clk) state == locking |-> req == 1),16,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state; //
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+req_when_state_requesting_fail,assert property (@(posedge clk) state == requesting |-> req == 0),16,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+req_when_state_locking_fail,assert property (@(posedge clk) state == locking |-> req == 0),16,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+req_when_state_idle_fail,assert property (@(posedge clk) state == idle |-> req == 1),16,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle; //
+    always @ (posedge clk) begin
+        case (state)
+            idle:       if (choice) state = requesting; //
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase 
+    end
+    assign req = state == requesting || state == locking; //
+endmodule"
+idle_when_choice_assertion,assert property (@(posedge clk) state == idle && choice == 0 |-> state == idle),11,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin // 
+        case (state)
+            idle:       if (choice) state = requesting;  //
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+locking_when_choice_assertion,assert property (@(posedge clk) state == locking && choice == 0 |-> state == locking),13,PASS,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice; //
+    output req;
+    parameter idle = 0; 
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state)
+            idle:       if (choice) state = requesting; 
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+idle_when_choice_assertion_fail,assert property (@(posedge clk) state == idle && choice == 1 |-> state == idle),11,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice; //
+    output req;
+    parameter idle = 0; //
+    parameter requesting = 1;
+    parameter locking = 2;
+    reg state;
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state)
+            idle:       if (choice) state = requesting; //
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+locking_when_choice_assertion_fail,assert property (@(posedge clk) state == locking && choice == 1 |-> state == locking),13,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack;
+    input choice; //
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1;
+    parameter locking = 2; //
+    reg state; //
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) //
+            idle:       if (choice) state = requesting; 
+            requesting: if (ack)    state = locking;
+            locking:    if (choice) state = idle; //
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"
+requesting_when_ack_assertion_fail,assert property (@(posedge clk) state == requesting && ack == 0 |-> state == requesting),12,FAIL,"module proc (clk, ack, req, choice);
+    input clk;
+    input ack; //
+    input choice;
+    output req;
+    parameter idle = 0;
+    parameter requesting = 1; //
+    parameter locking = 2;
+    reg state; //
+    initial state = idle;
+    always @ (posedge clk) begin
+        case (state) // 
+            idle:       if (choice) state = requesting;
+            requesting: if (ack)    state = locking; //
+            locking:    if (choice) state = idle;
+        endcase
+    end
+    assign req = state == requesting || state == locking;
+endmodule"

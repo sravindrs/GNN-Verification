@@ -1,0 +1,1591 @@
+name,assertion_sv,line_number,expected_result,code
+check_A_to_B,assert property (@(posedge clock) stato == A |-> stato == B),16,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0; //
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; 
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin //
+                stato=B; //
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_B_to_C_or_F,assert property (@(posedge clock) stato == B && LINEA==0 |-> stato == C),21,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B; // 
+                U=0;
+            end
+            B: begin //
+                if(LINEA==0) stato=C; //
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_B_to_F,assert property (@(posedge clock) stato == B && LINEA==1 |-> stato == F),22,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5; //
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0; 
+            end
+            B: begin //
+                if(LINEA==0) stato=C;
+                else stato=F; //
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_C_to_D_or_G,assert property (@(posedge clock) stato == C && LINEA==0 |-> stato == D),27,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3; //
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0; 
+            end
+            C: begin //
+                if(LINEA==0) stato=D; //
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_C_to_G,assert property (@(posedge clock) stato == C && LINEA==1 |-> stato == G),28,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; // 
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end 
+            C: begin //
+                if(LINEA==0) stato=D; //
+                else stato=G; //
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_D_to_E,assert property (@(posedge clock) stato == D |-> stato == E),31,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3; //
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G; 
+                U=0;
+            end
+            D: begin //
+                stato=E; //
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_E_to_B,assert property (@(posedge clock) stato == E |-> stato == B),34,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin 
+                stato=E;
+                U=0;
+            end
+            E: begin //
+                stato=B; //
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_F_to_G,assert property (@(posedge clock) stato == F |-> stato == G),37,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5; //
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end 
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin //
+                stato=G; //
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_G_to_E_or_A,assert property (@(posedge clock) stato == G && LINEA==0 |-> stato == E),41,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end 
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin //
+                if(LINEA==0) stato=E; //
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_G_to_A,assert property (@(posedge clock) stato == G && LINEA==1 |-> stato == A),42,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA; //
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0; //
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A;
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin 
+                stato=G;
+                U=0;
+            end
+            G: begin //
+                if(LINEA==0) stato=E; //
+                else stato=A; //
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_A,assert property (@(posedge clock) stato == A |-> U == 0),17,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0; //
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end 
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin //
+                stato=B;
+                U=0; //
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_B,assert property (@(posedge clock) stato == B |-> U == 0),23,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end 
+            B: begin //
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0; //
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_C,assert property (@(posedge clock) stato == C |-> U == 0),29,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato;
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin // 
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0; //
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_D,assert property (@(posedge clock) stato == D |-> U == 0),32,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; // 
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3; //
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0; // 
+            end
+            D: begin //
+                stato=E;
+                U=0; //
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_E,assert property (@(posedge clock) stato == E |-> U == 1),35,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E; 
+                U=0;
+            end
+            E: begin //
+                stato=B;
+                U=1; //
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_F,assert property (@(posedge clock) stato == F |-> U == 0),38,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5; //
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin 
+                stato=B;
+                U=1;
+            end
+            F: begin //
+                stato=G;
+                U=0; //
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_G,assert property (@(posedge clock) stato == G |-> U == 0),43,PASS,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;  
+                U=0;
+            end
+            G: begin //
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0; //
+            end
+        endcase
+    end
+endmodule"
+check_B_to_A,assert property (@(posedge clock) stato == B |-> stato == A),22,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0; //
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A;
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0; 
+            end
+            B: begin //
+                if(LINEA==0) stato=C; //
+                else stato=F; //
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_C_to_B,assert property (@(posedge clock) stato == C |-> stato == B),28,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A;
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end 
+            C: begin //
+                if(LINEA==0) stato=D; //
+                else stato=G; //
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_D_to_C,assert property (@(posedge clock) stato == D |-> stato == C),31,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3; //
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G; 
+                U=0;
+            end
+            D: begin //
+                stato=E; //
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_E_to_C,assert property (@(posedge clock) stato == E |-> stato == C),34,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin 
+                stato=E;
+                U=0;
+            end
+            E: begin //
+                stato=B; //
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_F_to_E,assert property (@(posedge clock) stato == F |-> stato == E),37,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5; //
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end 
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin //
+                stato=G; //
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_G_to_B,assert property (@(posedge clock) stato == G |-> stato == B),42,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U;
+    reg U;
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0;
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin 
+                stato=G;
+                U=0;
+            end
+            G: begin // 
+                if(LINEA==0) stato=E; //
+                else stato=A; //
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_A_fail,assert property (@(posedge clock) stato == A |-> U == 1),17,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0; //
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end 
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin //
+                stato=B;
+                U=0; //
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_B_fail,assert property (@(posedge clock) stato == B |-> U == 1),23,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1; //
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end 
+            B: begin //
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0; //
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_C_fail,assert property (@(posedge clock) stato == C |-> U == 1),29,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2; //
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A;
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin // 
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0; //
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_D_fail,assert property (@(posedge clock) stato == D |-> U == 1),32,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato;
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3; //
+    parameter E=4;
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A; 
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0; 
+            end
+            D: begin //
+                stato=E;
+                U=0; //
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_E_fail,assert property (@(posedge clock) stato == E |-> U == 0),35,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato;
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4; //
+    parameter F=5;
+    parameter G=6;
+    initial begin
+        stato=A;
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato)
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E; // 
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G;
+                U=0;
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_F_fail,assert property (@(posedge clock) stato == F |-> U == 1),38,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato;
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5; //
+    parameter G=6;
+    initial begin
+        stato=A;
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin 
+                stato=B;
+                U=1;
+            end
+            F: begin //
+                stato=G;
+                U=0; //
+            end
+            G: begin
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0;
+            end
+        endcase
+    end
+endmodule"
+check_U_at_G_fail,assert property (@(posedge clock) stato == G |-> U == 1),43,FAIL,"module main(clock, LINEA, U);
+    input clock;
+    input LINEA;
+    output U; //
+    reg U; //
+    reg [2:0] stato; //
+    parameter A=0;
+    parameter B=1;
+    parameter C=2;
+    parameter D=3;
+    parameter E=4;
+    parameter F=5;
+    parameter G=6; //
+    initial begin
+        stato=A; //
+        U=0; //
+    end
+    always @(posedge clock) begin
+        case(stato) //
+            A: begin
+                stato=B;
+                U=0;
+            end
+            B: begin
+                if(LINEA==0) stato=C;
+                else stato=F;
+                U=0;
+            end
+            C: begin
+                if(LINEA==0) stato=D;
+                else stato=G;
+                U=0;
+            end
+            D: begin
+                stato=E;
+                U=0;
+            end
+            E: begin
+                stato=B;
+                U=1;
+            end
+            F: begin
+                stato=G; 
+                U=0;
+            end
+            G: begin //
+                if(LINEA==0) stato=E;
+                else stato=A;
+                U=0; //
+            end
+        endcase
+    end
+endmodule"

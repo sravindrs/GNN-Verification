@@ -1,0 +1,2296 @@
+name,assertion_sv,line_number,expected_result,code
+check_reset_prev,assert property (@(posedge clock) reset |-> prev == 0),20,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset; //
+    input [7:0] in;
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0; // 
+    end
+    always @ (posedge clock)
+        if (reset) //
+            prev = 0; //
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_load_condition,assert property (@(posedge clock) load |-> prev == 8'h1b),23,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in;
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load; //
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0; //
+    end
+    always @ (posedge clock)
+        if (reset) 
+            prev = 0; //
+        else
+            prev = in; //
+    assign load = (prev == 8'h1b); //
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_cmds,assert property (@(posedge clock) reset |-> Ncmd == 1 && Lcmd == 0 && Ucmd == 0 && Ccmd == 0),26,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock; //
+    input reset; //
+    input [7:0] in;
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; //
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0; //
+        Ucmd = 0; //
+        Ncmd = 1; //
+        Ccmd = 0; //
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b);
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1; //
+            Lcmd = 0; //
+            Ucmd = 0; //
+            Ccmd = 0; //
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Lcmd_case,assert property (@(posedge clock) in == 8'h4c |-> Lcmd == 1),30,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd; //
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1; 
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin //
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0; //
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ucmd_case,assert property (@(posedge clock) in == 8'h55 |-> Ucmd == 1),34,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd; //
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd; //
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin //
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0; //
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ncmd_case,assert property (@(posedge clock) in == 8'h4e |-> Ncmd == 1),38,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd; //
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd; //
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end  
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin //
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0; //
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ccmd_case,assert property (@(posedge clock) in == 8'h43 |-> Ccmd == 1),42,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd; //
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b);
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin //
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1; //
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_default_case,assert property (@(posedge clock) (in != 8'h4c && in != 8'h55 && in != 8'h4e && in != 8'h43) |-> Lcmd == 1'bx && Ucmd == 1'bx && Ncmd == 1'bx && Ccmd == 1'bx),46,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; //
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b);
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;  
+                end
+                default: begin //
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx; //
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_prev_fail,assert property (@(posedge clock) reset |-> prev != 0),20,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset; //
+    input [7:0] in;
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0; // 
+    end
+    always @ (posedge clock)
+        if (reset) //
+            prev = 0; //
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_load_condition_fail,assert property (@(posedge clock) load |-> prev != 8'h1b),23,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in;
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load; //
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset) // 
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); // 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_cmds_fail,assert property (@(posedge clock) reset |-> Ncmd != 1 || Lcmd != 0 || Ucmd != 0 || Ccmd != 0),26,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset; //
+    input [7:0] in;
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; //
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset) //
+            prev = 0; //
+        else
+            prev = in; // 
+    assign load = (prev == 8'h1b); // 
+    always @ (posedge clock) begin
+        if (reset) begin //
+            Ncmd = 1; //
+            Lcmd = 0; //
+            Ucmd = 0; //
+            Ccmd = 0; //
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Lcmd_case_fail,assert property (@(posedge clock) in == 8'h4c |-> Lcmd != 1),30,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd; //
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1; 
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin  //
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0; //
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ucmd_case_fail,assert property (@(posedge clock) in == 8'h55 |-> Ucmd != 1),34,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd; //
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd; //
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); // escape
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin 
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin //
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0; //
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ncmd_case_fail,assert property (@(posedge clock) in == 8'h4e |-> Ncmd != 1),38,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd; //
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd; //
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); // escape
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end 
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin //
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0; //
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Ccmd_case_fail,assert property (@(posedge clock) in == 8'h43 |-> Ccmd != 1),42,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd; //
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin  
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin //
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1; //
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_default_case_fail,assert property (@(posedge clock) (in != 8'h4c && in != 8'h55 && in != 8'h4e && in != 8'h43) |-> Lcmd != 1'bx || Ucmd != 1'bx || Ncmd != 1'bx || Ccmd != 1'bx),46,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; //
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load;
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in) //
+                8'h4c: begin  //
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin  //
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin //
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin//
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1; 
+                end
+                default: begin //
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx; //
+                end 
+            endcase
+        end
+    end
+endmodule"
+check_prev_value_after_reset,assert property (@(posedge clock) (reset && in == 8'h1b) |-> prev == 0),20,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset; //
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0; // 
+    end
+    always @ (posedge clock)
+        if (reset) //
+            prev = 0; //
+        else
+            prev = in;
+    assign load = (prev == 8'h1b); // 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_prev_value_after_reset_fail,assert property (@(posedge clock) (reset && in == 8'h1b) |-> prev != 0),20,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock;
+    input reset; //
+    input [7:0] in; //
+    output Lcmd;
+    output Ucmd;
+    output Ncmd;
+    output Ccmd;
+    reg Lcmd;
+    reg Ucmd;
+    reg Ncmd;
+    reg Ccmd;
+    wire load;
+    reg [7:0] prev; //
+    initial begin
+        Lcmd = 0;
+        Ucmd = 0;
+        Ncmd = 1;
+        Ccmd = 0;
+        prev = 0; // 
+    end
+    always @ (posedge clock)
+        if (reset) //
+            prev = 0;
+        else //
+            prev = in; //
+    assign load = (prev == 8'h1b);
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_change_after_load,assert property (@(posedge clock) (!load && in == 8'h4e) |-> Ncmd == 1 && Lcmd == 0 && Ucmd == 0 && Ccmd == 0),38,PASS,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock; //
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; //
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load; //
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0; //
+        Ucmd = 0; //
+        Ncmd = 1; //
+        Ccmd = 0; //
+        prev = 0;
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in; //
+    assign load = (prev == 8'h1b); // escape //
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1; //
+            Lcmd = 0; //
+            Ucmd = 0; //
+            Ccmd = 0; //
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_change_after_load_fail,assert property (@(posedge clock) (!load && in == 8'h4e) |-> Ncmd != 1 || Lcmd != 0 || Ucmd != 0 || Ccmd != 0),38,FAIL,"module control (clock, reset, in, Lcmd, Ucmd, Ncmd, Ccmd);
+    input clock; //
+    input reset;
+    input [7:0] in; //
+    output Lcmd; //
+    output Ucmd; //
+    output Ncmd; //
+    output Ccmd; // 
+    reg Lcmd; //
+    reg Ucmd; //
+    reg Ncmd; //
+    reg Ccmd; //
+    wire load; //
+    reg [7:0] prev;
+    initial begin
+        Lcmd = 0; //
+        Ucmd = 0; //
+        Ncmd = 1; //
+        Ccmd = 0; //
+        prev = 0; //
+    end
+    always @ (posedge clock)
+        if (reset)
+            prev = 0;
+        else
+            prev = in; //
+    assign load = (prev == 8'h1b); // 
+    always @ (posedge clock) begin
+        if (reset) begin
+            Ncmd = 1;
+            Lcmd = 0;
+            Ucmd = 0;
+            Ccmd = 0;
+        end else if (load) begin
+            case (in)
+                8'h4c: begin 
+                    Lcmd = 1; Ucmd = 0; Ncmd = 0; Ccmd = 0;
+                end 
+                8'h55: begin 
+                    Lcmd = 0; Ucmd = 1; Ncmd = 0; Ccmd = 0;
+                end
+                8'h4e: begin 
+                    Lcmd = 0; Ucmd = 0; Ncmd = 1; Ccmd = 0;
+                end
+                8'h43: begin
+                    Lcmd = 0; Ucmd = 0; Ncmd = 0; Ccmd = 1;
+                end
+                default: begin
+                    Lcmd = 1'bx; Ucmd = 1'bx; Ncmd = 1'bx; Ccmd = 1'bx;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_Lcmd_signal,assert property (@(posedge clk) Lcmd |-> Lcmd == 1'b1),3,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd; //
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) : //
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_Ucmd_signal,assert property (@(posedge clk) Ucmd |-> Ucmd == 1'b1),4,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd; // 
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_Ncmd_signal,assert property (@(posedge clk) Ncmd |-> Ncmd == 1'b1),5,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd; //
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in : //
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_Ccmd_signal,assert property (@(posedge clk) Ccmd |-> Ccmd == 1'b1),6,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd; //
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_in_signal,assert property (@(posedge clk) $isunknown(in) |-> in != 8'hxx),2,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; // 
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_out_signal,assert property (@(posedge clk) $isunknown(out) |-> out != 8'hxx),7,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd; //
+    input Ncmd; //
+    input Ccmd; //
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) : //
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in : //
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_toLower_function,assert property (@(posedge clk) isUpper(in) |-> toLower(in) == in + 8'h20),15,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in)) // 
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_toUpper_function,assert property (@(posedge clk) !isUpper(in) |-> toUpper(in) == in - 8'h20),23,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in; //
+        begin: _toUpper
+            if (!isUpper(in)) //
+                toUpper = in - 8'h20; //
+            else
+                toUpper = in; //
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_changeCase_function,assert property (@(posedge clk) isUpper(in) |-> changeCase(in) == in + 8'h20),31,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in; //
+        begin: _changeCase
+            if (isUpper(in)) //
+                changeCase = in + 8'h20; //
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_isUpper_function,assert property (@(posedge clk) isUpper(in) |-> isUpper == ~in[5]),38,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in)) //
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in)) //
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in)) //
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction 
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_Lcmd_toLower,assert property (@(posedge clk) Lcmd |-> out == toLower(in)),8,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) : // 
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower; //
+        input [7:0] in; //
+        begin: _toLower
+            if (isUpper(in)) //
+                toLower = in + 8'h20; // 
+            else
+                toLower = in; //
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper; //
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_Ucmd_toUpper,assert property (@(posedge clk) Ucmd |-> out == toUpper(in)),9,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) : // 
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in; //
+        begin: _toUpper
+            if (!isUpper(in)) //
+                toUpper = in - 8'h20; // 
+            else
+                toUpper = in; //
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; // 
+        end
+    endfunction
+endmodule"
+check_Ncmd_noChange,assert property (@(posedge clk) Ncmd |-> out == in),10,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd; //
+    input Ccmd;
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in : // 
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_Ccmd_changeCase,assert property (@(posedge clk) Ccmd |-> out == changeCase(in)),11,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; // 
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd; // 
+    output [7:0] out; // 
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;  //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20; //
+            else
+                changeCase = in - 8'h20; // 
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5]; // 
+        end
+    endfunction
+endmodule"
+check_allCmds_off,assert property (@(posedge clk) !(Lcmd || Ucmd || Ncmd || Ccmd) |-> out == 8'hxx),12,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd; //
+    input Ncmd; //
+    input Ccmd; //
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower; 
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_multipleCmds_on,assert property (@(posedge clk) (Lcmd && Ucmd) |-> out == 8'hxx),13,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) : //
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in; 
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_in_upperCase,assert property (@(posedge clk) isUpper(in) |-> in[5] == 1'b0),39,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper; // 
+        input [7:0] in; //
+        begin: _isUpper //
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_in_lowerCase,assert property (@(posedge clk) !isUpper(in) |-> in[5] == 1'b1),40,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper; //
+        input [7:0] in; // 
+        begin: _isUpper //
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_changeCase_upperToLower,assert property (@(posedge clk) isUpper(in) |-> changeCase(in) == in + 8'h20),32,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in; //
+        begin: _changeCase
+            if (isUpper(in)) //
+                changeCase = in + 8'h20; //
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_changeCase_lowerToUpper,assert property (@(posedge clk) !isUpper(in) |-> changeCase(in) == in - 8'h20),33,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in; //
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20; //
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_toLower_alreadyLower,assert property (@(posedge clk) !isUpper(in) |-> toLower(in) == in),17,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else // 
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_toUpper_alreadyUpper,assert property (@(posedge clk) isUpper(in) |-> toUpper(in) == in),25,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in; //
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20; //
+            else
+                toUpper = in; //
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_Lcmd_active_for_lower,assert property (@(posedge clk) !isUpper(in) |-> Lcmd == 1'b0),16,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) : //
+                 Ucmd ? toUpper(in) :
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in; //
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in; //
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_Ucmd_active_for_upper,assert property (@(posedge clk) isUpper(in) |-> Ucmd == 1'b0),24,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd;
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) :
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx;
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in; //
+        begin: _isUpper
+            isUpper = ~in[5]; //
+        end
+    endfunction
+endmodule"
+check_noCmd_active,assert property (@(posedge clk) out == 8'hxx |-> !(Lcmd || Ucmd || Ncmd || Ccmd)),14,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; //
+    input Lcmd; //
+    input Ucmd; //
+    input Ncmd; //
+    input Ccmd; //
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) : ..
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in : //
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower 
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_multipleCmds_active,assert property (@(posedge clk) (Lcmd && Ucmd) |-> out == 8'hxx),13,FAIL,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in;
+    input Lcmd; //
+    input Ucmd; //
+    input Ncmd;
+    input Ccmd; //
+    output [7:0] out; //
+    assign out = Lcmd ? toLower(in) : //
+                 Ucmd ? toUpper(in) : //
+                 Ncmd ? in :
+                 Ccmd ? changeCase(in) : 8'hxx; //
+    function [7:0] toLower;
+        input [7:0] in; 
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20;
+            else
+                toLower = in;
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20;
+            else
+                toUpper = in;
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20;
+            else
+                changeCase = in - 8'h20;
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5];
+        end
+    endfunction
+endmodule"
+check_in_is_unknown,assert property (@(posedge clk) $isunknown(in) |-> in == 8'hxx),2,PASS,"module transform (in, Lcmd, Ucmd, Ncmd, Ccmd, out);
+    input [7:0] in; // 
+    input Lcmd;
+    input Ucmd;
+    input Ncmd;
+    input Ccmd;
+    output [7:0] out;
+    assign out = Lcmd ? toLower(in) : // 
+                 Ucmd ? toUpper(in) : // 
+                 Ncmd ? in : // 
+                 Ccmd ? changeCase(in) : 8'hxx; // 
+    function [7:0] toLower;
+        input [7:0] in;
+        begin: _toLower
+            if (isUpper(in))
+                toLower = in + 8'h20; // 
+            else
+                toLower = in; //
+        end
+    endfunction
+    function [7:0] toUpper;
+        input [7:0] in;
+        begin: _toUpper
+            if (!isUpper(in))
+                toUpper = in - 8'h20; // 
+            else
+                toUpper = in; // 
+        end
+    endfunction
+    function [7:0] changeCase;
+        input [7:0] in;
+        begin: _changeCase
+            if (isUpper(in))
+                changeCase = in + 8'h20; // 
+            else
+                changeCase = in - 8'h20; // 
+        end
+    endfunction
+    function isUpper;
+        input [7:0] in;
+        begin: _isUpper
+            isUpper = ~in[5]; // 
+        end
+    endfunction
+endmodule"

@@ -1,0 +1,1657 @@
+name,assertion_sv,line_number,expected_result,code
+Check_state_a_to_f,assert property (@(posedge clock) stato == a |-> stato == f),19,FAIL,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0; //
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a; //
+    OUTP=0;
+    OVERFLW=0;
+  end 
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin //
+        if(LINE1&LINE2) stato=f; //
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_a_to_b,assert property (@(posedge clock) stato == a |-> stato == b),20,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0; //
+  parameter b=1; //
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin // 
+    case(stato) //
+      a: begin //
+        if(LINE1&LINE2) stato=f;
+        else stato=b; //
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_outp_in_state_a,assert property (@(posedge clock) stato == a |-> OUTP == LINE1^LINE2),21,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0; //
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) // 
+      a: begin //
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2; //
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_overflow_in_state_a,assert property (@(posedge clock) stato == a |-> OVERFLW == 0),22,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0; //
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin // 
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; //
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_e_to_f,assert property (@(posedge clock) stato == e |-> stato == f),25,FAIL,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3; //
+  parameter f=4; //
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2; 
+        OVERFLW=0;
+      end
+      e: begin //
+        if(LINE1&LINE2) stato=f; //
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_e_to_b,assert property (@(posedge clock) stato == e |-> stato == b),26,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1; //
+  parameter c=2;
+  parameter e=3; //
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; 
+      end
+      e: begin //
+        if(LINE1&LINE2) stato=f;
+        else stato=b; //
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_outp_in_state_e,assert property (@(posedge clock) stato == e |-> OUTP == LINE1^LINE2),27,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3; //
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end  
+      e: begin //
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2; //
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_overflow_in_state_e,assert property (@(posedge clock) stato == e |-> OVERFLW == 1),28,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW; //
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3; //
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin // 
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1; //
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_b_to_g,assert property (@(posedge clock) stato == b |-> stato == g),31,FAIL,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1; //
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5; //
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin //
+        if(LINE1&LINE2) stato=g; //
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_b_to_c,assert property (@(posedge clock) stato == b |-> stato == c),32,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1; //
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin //
+        if(LINE1&LINE2) stato=g;
+        else stato=c; //
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_outp_in_state_b,assert property (@(posedge clock) stato == b |-> OUTP == LINE1^LINE2),33,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato;
+  parameter a=0;
+  parameter b=1; //
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end 
+      b: begin //
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2; //
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_overflow_in_state_b,assert property (@(posedge clock) stato == b & (LINE1&LINE2)|-> stato == g),34,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; 
+  input clock;
+  reg OUTP,OVERFLW; //
+  reg [2:0] stato;
+  parameter a=0;
+  parameter b=1; //
+  parameter c=2;
+  parameter e=3;
+  parameter f=4;
+  parameter g=5; //
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin //
+        if(LINE1&LINE2) stato=g; //
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; 
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_c_to_wf1,assert property (@(posedge clock) stato == c & (LINE1&LINE2)|-> stato == wf1),34,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; 
+  input clock;
+  reg OUTP,OVERFLW; 
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7; //
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin 
+        if(LINE1&LINE2) stato=g; 
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; 
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin //
+        if(LINE1&LINE2) stato=wf1; //
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_f_to_g,assert property (@(posedge clock) stato == f & (LINE1|LINE2)|-> stato == g),34,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; 
+  input clock;
+  reg OUTP,OVERFLW; 
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; 
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5; //
+  parameter wf0=6; 
+  parameter wf1=7; 
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin 
+        if(LINE1&LINE2) stato=g; 
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; 
+      end
+      f: begin //
+        if(LINE1|LINE2) stato=g; //
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin 
+        if(LINE1&LINE2) stato=wf1; 
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_f_to_g,assert property (@(posedge clock) stato == f |-> stato == g),37,FAIL,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5; //
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2; 
+        OVERFLW=0;
+      end
+      f: begin //
+        if(LINE1|LINE2) stato=g; //
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_f_to_c,assert property (@(posedge clock) stato == f |-> stato == c),38,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;  
+      end
+      f: begin //
+        if(LINE1|LINE2) stato=g;
+        else stato=c; //
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_outp_in_state_f,assert property (@(posedge clock) stato == f |-> OUTP == ~(LINE1^LINE2)),39,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end 
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2); //
+        OVERFLW=0;
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_overflow_in_state_f,assert property (@(posedge clock) stato == f |-> OVERFLW == 0),40,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW; //
+  reg [2:0] stato;
+  parameter a=0;
+  parameter b=1;
+  parameter c=2;
+  parameter e=3;
+  parameter f=4; //
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato)
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin // 
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0; //
+      end
+      c: begin
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_c_to_wf1,assert property (@(posedge clock) stato == c |-> stato == wf1),43,FAIL,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato;
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7; //
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2); // 
+        OVERFLW=0;
+      end
+      c: begin //
+        if(LINE1&LINE2) stato=wf1; //
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_c_to_wf0,assert property (@(posedge clock) stato == c |-> stato == wf0),44,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6; //
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0; // 
+      end
+      c: begin //
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0; //
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_state_wf1_to_e,assert property (@(posedge clock) stato == wf1 & (LINE1|LINE2)|-> stato == e),44,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2; //
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; 
+  parameter e=3; //
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6; 
+  parameter wf1=7; //
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0; // 
+      end
+      c: begin //
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0; //
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_outp_in_state_c,assert property (@(posedge clock) stato == c |-> OUTP == LINE1^LINE2),45,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW; //
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato;
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end 
+      c: begin //
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2; //
+        OVERFLW=0;
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
+Check_overflow_in_state_c,assert property (@(posedge clock) stato == c |-> OVERFLW == 0),46,PASS,"module main(LINE1,LINE2,OUTP,OVERFLW,clock);
+  input LINE1,LINE2;
+  output OUTP,OVERFLW;
+  input clock;
+  reg OUTP,OVERFLW;
+  reg [2:0] stato; //
+  parameter a=0;
+  parameter b=1;
+  parameter c=2; //
+  parameter e=3;
+  parameter f=4;
+  parameter g=5;
+  parameter wf0=6;
+  parameter wf1=7;
+  initial begin
+    stato=a;
+    OUTP=0;
+    OVERFLW=0;
+  end
+  always @(posedge clock) begin
+    case(stato) //
+      a: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      e: begin
+        if(LINE1&LINE2) stato=f;
+        else stato=b;
+        OUTP=LINE1^LINE2;
+        OVERFLW=1;
+      end
+      b: begin
+        if(LINE1&LINE2) stato=g;
+        else stato=c;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      f: begin
+        if(LINE1|LINE2) stato=g;
+        else stato=c;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      c: begin // 
+        if(LINE1&LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0; //
+      end
+      g: begin
+        if(LINE1|LINE2) stato=wf1;
+        else stato=wf0;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+      wf0: begin
+        if(LINE1&LINE2) stato=e;
+        else stato=a;
+        OUTP=LINE1^LINE2;
+        OVERFLW=0;
+      end
+      wf1: begin
+        if(LINE1|LINE2) stato=e;
+        else stato=a;
+        OUTP=~(LINE1^LINE2);
+        OVERFLW=0;
+      end
+    endcase
+  end
+endmodule"
