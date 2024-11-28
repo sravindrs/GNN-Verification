@@ -1,0 +1,2311 @@
+name,assertion_sv,line_number,expected_result,code
+check_shift_reg_reset,assert property (@(posedge clock) reset |-> shift_reg == 0),9,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin // 
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_reset,assert property (@(posedge clock) reset |-> rx_status == 4'b0000),10,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin // 
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_carrier_loss,assert property (@(posedge clock) carrier_loss |-> rx_status[0] == 1),14,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in}; // 
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_biphase_violation,assert property (@(posedge clock) biphase_violation |-> rx_status[1] == 1),15,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1; // 
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_no_reset,assert property (@(posedge clock) !reset |-> shift_reg != 0),12,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000; // 
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_no_reset,assert property (@(posedge clock) !reset |-> rx_status != 4'b0000),12,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000; // 
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_no_carrier_loss,assert property (@(posedge clock) !carrier_loss |-> rx_status[0] == 0),14,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in}; // 
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_no_biphase_violation,assert property (@(posedge clock) !biphase_violation |-> rx_status[1] == 0),15,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1; // 
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_bit_in,assert property (@(posedge clock) bit_in |-> shift_reg[19] == bit_in),12,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000; // 
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_bit_shift,assert property (@(posedge clock) bit_in |-> shift_reg[18:0] == shift_reg[19:1]),12,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000; // 
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_reset_on_posedge,assert property (@(posedge clock) reset |-> next(rx_status) == 4'b0000),10,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin // 
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_reset_on_posedge,assert property (@(posedge clock) reset |-> next(shift_reg) == 0),9,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin // 
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_not_reset_on_negedge,assert property (@(negedge clock) reset |-> shift_reg != 0),9,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin // 
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_not_reset_on_negedge,assert property (@(negedge clock) reset |-> rx_status != 4'b0000),10,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin // 
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_no_carrier_loss,assert property (@(posedge clock) !carrier_loss |-> next(rx_status[0]) == 0),14,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in}; // 
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_no_biphase_violation,assert property (@(posedge clock) !biphase_violation |-> next(rx_status[1]) == 0),15,PASS,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1; // 
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_no_change_on_reset,assert property (@(posedge clock) reset |-> next(shift_reg) == shift_reg),9,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin // 
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_no_change_on_reset,assert property (@(posedge clock) reset |-> next(rx_status) == rx_status),10,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin // 
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_shift_reg_change_without_bit_in,assert property (@(posedge clock) !bit_in |-> next(shift_reg) != shift_reg),12,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000; // 
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in};
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_rx_status_change_without_carrier_loss,assert property (@(posedge clock) !carrier_loss |-> next(rx_status[0]) != rx_status[0]),14,FAIL,"module shift_register(clock, reset, bit_in, carrier_loss, biphase_violation, shift_reg, rx_status);
+    input clock, reset, bit_in, carrier_loss, biphase_violation;
+    output reg [19:0] shift_reg;
+    output reg [3:0] rx_status;
+    initial begin
+        shift_reg = 0;
+        rx_status = 4'b0000;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            shift_reg = 0;
+            rx_status = 4'b0000;
+        end else begin
+            shift_reg = {shift_reg[18:0], bit_in}; // 
+            if (carrier_loss) rx_status[0] = 1;
+            if (biphase_violation) rx_status[1] = 1;
+        end
+    end
+endmodule"
+check_reset_parity,assert property (@(posedge clock) reset |-> parity == 0),11,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; //
+    input [6:0] bit_count_A, bit_count_B;
+    input [8:0] frame_counter;
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8;
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin 
+            parity = parity ^ bit_in;
+        end
+    end
+endmodule"
+check_bit_count_A_parity,assert property (@(posedge clock) bit_count_A == L2 |-> parity == 0),12,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; //
+    input [6:0] bit_count_A, bit_count_B; //
+    input [8:0] frame_counter; //
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin 
+            parity = parity ^ bit_in; // 
+        end
+    end
+endmodule"
+check_bit_count_B_parity,assert property (@(posedge clock) bit_count_B == L4 |-> parity == 0),12,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in;
+    input [6:0] bit_count_A, bit_count_B; //
+    input [8:0] frame_counter;
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin
+            parity = parity ^ bit_in; 
+        end
+    end
+endmodule"
+check_frame_counter_parity,assert property (@(posedge clock) frame_counter == L6 |-> parity == 0),12,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in;
+    input [6:0] bit_count_A, bit_count_B;
+    input [8:0] frame_counter; //
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin
+            parity = parity ^ bit_in; // 
+        end
+    end
+endmodule"
+check_no_reset_parity,assert property (@(posedge clock) !reset |-> parity == (parity ^ bit_in)),14,FAIL,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; //
+    input [6:0] bit_count_A, bit_count_B;
+    input [8:0] frame_counter;
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8;
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0;
+        end else begin
+            parity = parity ^ bit_in;
+        end
+    end 
+endmodule"
+check_bit_count_A_no_reset,assert property (@(posedge clock) bit_count_A != L2 |-> parity == (parity ^ bit_in)),14,FAIL,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in;
+    input [6:0] bit_count_A, bit_count_B; //
+    input [8:0] frame_counter;
+    output reg parity;
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0; //
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0;
+        end else begin
+            parity = parity ^ bit_in;
+        end
+    end 
+endmodule"
+check_bit_count_B_no_reset,assert property (@(posedge clock) bit_count_B != L4 |-> parity == (parity ^ bit_in)),14,FAIL,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; //
+    input [6:0] bit_count_A, bit_count_B; //
+    input [8:0] frame_counter;
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0; //
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin
+            parity = parity ^ bit_in;
+        end
+    end 
+endmodule"
+check_frame_counter_no_reset,assert property (@(posedge clock) frame_counter != L6 |-> parity == (parity ^ bit_in)),14,FAIL,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in;
+    input [6:0] bit_count_A, bit_count_B;
+    input [8:0] frame_counter;
+    output reg parity;
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8;
+    initial parity = 0;
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0; //
+        end else begin
+            parity = parity ^ bit_in;
+        end
+    end 
+endmodule"
+check_initial_parity,assert property (@(posedge clock) reset |-> parity == 0),9,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; //
+    input [6:0] bit_count_A, bit_count_B;
+    input [8:0] frame_counter;
+    output reg parity;
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8;
+    initial parity = 0; //
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin // 
+            parity = 0; //
+        end else begin
+            parity = parity ^ bit_in;
+        end
+    end
+endmodule"
+check_parity_xor,assert property (@(posedge clock) !reset && bit_count_A != L2 && bit_count_B != L4 && frame_counter != L6 |-> parity == (parity ^ bit_in)),14,PASS,"module parity_manager(clock, reset, bit_in, bit_count_A, bit_count_B, frame_counter, parity);
+    input clock, reset, bit_in; 
+    input [6:0] bit_count_A, bit_count_B; //
+    input [8:0] frame_counter; //
+    output reg parity; //
+    parameter L2 = 2, L4 = 4, L6 = 6, L8 = 8; //
+    initial parity = 0; //
+    always @ (posedge clock) begin
+        if (reset || bit_count_A == L2 || bit_count_B == L4 || frame_counter == L6) begin //
+            parity = 0;
+        end else begin //
+            parity = parity ^ bit_in; //
+        end
+    end 
+endmodule"
+check_reset_state,assert property (@(posedge clock) reset |-> pc == L0),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_clock_out,assert property (@(posedge clock) reset |-> clock_out == 0),19,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0; // 
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_status_flags,assert property (@(posedge clock) reset |-> status_flags == 4'b0000),19,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0; // 
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L0_to_L1,assert property (@(posedge clock) pc == L0 && rx_control[2] |-> pc == L1),23,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin // 
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_reset_to_L0,assert property (@(posedge clock) reset |-> pc == L0),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_stays_L0,assert property (@(posedge clock) pc == L0 && !rx_control[2] |-> pc == L0),23,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin // 
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_clock_out_on_xtal0,assert property (@(posedge clock) rx_control[1:0] == 2'b00 |-> clock_out == xtal[0]),27,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2]; // 
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_clock_out_on_xtal1,assert property (@(posedge clock) rx_control[1:0] == 2'b01 |-> clock_out == xtal[1]),28,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3]; // 
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_clock_out_on_xtal2,assert property (@(posedge clock) rx_control[1:0] == 2'b10 |-> clock_out == xtal[2]),29,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase // 
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_clock_out_on_xtal3,assert property (@(posedge clock) rx_control[1:0] == 2'b11 |-> clock_out == xtal[3]),30,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0; // 
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_L1_to_L0,assert property (@(posedge clock) pc == L1 |-> pc == L0),32,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase // 
+        end
+    end
+endmodule"
+check_reset_status_flags_zero,assert property (@(posedge clock) reset |-> status_flags == 4'b0000),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_clock_out_zero,assert property (@(posedge clock) reset |-> clock_out == 0),19,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0; // 
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_reset_pc_L0,assert property (@(posedge clock) reset |-> pc == L0),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_clock_out_on_reset,assert property (@(posedge clock) reset |-> clock_out == 0),19,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0; // 
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_status_flags_on_reset,assert property (@(posedge clock) reset |-> status_flags == 4'b0000),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_on_reset,assert property (@(posedge clock) reset |-> pc == L0),20,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin // 
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_stay_at_L0,assert property (@(posedge clock) pc == L0 && !rx_control[2] |-> pc == L0),23,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin // 
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_transition_to_L1,assert property (@(posedge clock) pc == L0 && rx_control[2] |-> pc == L1),23,FAIL,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin // 
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_pc_back_to_L0,assert property (@(posedge clock) pc == L1 |-> pc == L0),32,PASS,"module reg_control(clock, reset, rx_control, xtal, clock_out, status_flags);
+    input clock, reset;
+    input [3:0] rx_control;
+    input [3:0] xtal;
+    output reg clock_out;
+    output reg [3:0] status_flags;
+    parameter L0 = 0;
+    parameter L1 = 1;
+    reg [3:0] pc;
+    initial begin
+        clock_out = 0;
+        status_flags = 4'b0000;
+        pc = L0;
+    end
+    always @ (posedge clock) begin
+        if (reset) begin
+            clock_out = 0;
+            status_flags = 4'b0000;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (rx_control[2]) pc = L1;  
+                L1: begin
+                    case (rx_control[1:0])
+                        2'b00: clock_out = xtal[0];
+                        2'b01: clock_out = xtal[1];
+                        2'b10: clock_out = xtal[2];
+                        2'b11: clock_out = xtal[3];
+                    endcase
+                    pc = L0;
+                end
+            endcase // 
+        end
+    end
+endmodule"
+check_initialisation,assert property (@(posedge clock) reset |-> bit_count_A == 0 && bit_count_B == 0 && frame_counter == 0 && load_A == 0 && load_B == 0 && load_buff == 0 && pc == L0),23,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset; //
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter; //
+    output reg load_A, load_B, load_buff; //
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0]; 
+    always @ (posedge clock) begin
+        if (reset) begin //
+            bit_count_A = 0; //
+            bit_count_B = 0; //
+            frame_counter = 0; //
+            load_A = 0; //
+            load_B = 0; //
+            load_buff = 0; //
+            pc = L0; //
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_preamble_1_to_L3,assert property (@(posedge clock) pc == L0 && preamble_1 |-> pc == L3),26,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3; //
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0; //
+    parameter L3 = 3; //
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0; // 
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3; //
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_transition_without_preamble_1,assert property (@(posedge clock) pc == L0 && !preamble_1 |-> pc == L0),26,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3; //
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0; //
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0; 
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc) //
+                L0: if (preamble_1) pc = L3; //
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_bit_count_A_increment,assert property (@(posedge clock) pc == L3 && bit_count_A < 32 |-> bit_count_A == $past(bit_count_A) + 1),29,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3; //
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0; //
+        bit_count_B = 0; //
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0; //
+            bit_count_B = 0;  //
+            frame_counter = 0;
+            load_A = 0;  
+            load_B = 0;
+            load_buff = 0;
+            pc = L0; //
+        end else begin
+            case (pc) //
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin //
+                    bit_count_A = bit_count_A + 1; //
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_load_A_at_31,assert property (@(posedge clock) pc == L3 && bit_count_A == 31 |-> load_A == 1),31,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3; //
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0; //
+        bit_count_B = 0; //
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0; //
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0; //
+            bit_count_B = 0; //
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0; 
+            pc = L0; //
+        end else begin
+            case (pc) //
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin //
+                    bit_count_A = bit_count_A + 1; //
+                    if (bit_count_A == 31) load_A = 1; //
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_transition_to_L6,assert property (@(posedge clock) pc == L3 && bit_count_A == 32 |-> pc == L6),32,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3; //
+    parameter L6 = 6; //
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0; //
+        bit_count_B = 0; //
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0; //
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0; // 
+        end else begin
+            case (pc) //
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin //
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6; //
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_transition_to_L6,assert property (@(posedge clock) pc == L3 && bit_count_A < 32 |-> pc == L3),32,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3; //
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0; //
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0; //
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0; // 
+        end else begin
+            case (pc) //
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin //
+                    bit_count_A = bit_count_A + 1; //
+                    if (bit_count_A == 31) load_A = 1; //
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_frame_counter_transition,assert property (@(posedge clock) pc == L6 && frame_counter < 191 |-> pc == L9),35,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter; //
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6; //
+    parameter L9 = 9; //
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0; //
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0; //
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin //
+                    bit_count_B = 1;
+                    pc = L9; //
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_frame_counter_transition,assert property (@(posedge clock) pc == L6 && frame_counter >= 191 |-> pc == L0),36,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter; //
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0; //
+    parameter L3 = 3;
+    parameter L6 = 6; //
+    parameter L9 = 9;
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0; //
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0; //
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0; //
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0; //
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin //
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0; //
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1; //
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_bit_count_B_increment,assert property (@(posedge clock) pc == L9 && bit_count_B < 32 |-> bit_count_B == $past(bit_count_B) + 1),39,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6; // 
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_load_B_at_31,assert property (@(posedge clock) pc == L9 && bit_count_B == 30 |-> load_B == 1),41,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B; //
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff; //
+    output wire [1:0] frame_ofs; 
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9; //
+    reg [3:0] pc; //
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1; // 
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin //
+                    bit_count_B = bit_count_B + 1; //
+                    if (bit_count_B == 31) load_B = 1; //
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_frame_counter_increment,assert property (@(posedge clock) pc == L9 && bit_count_B == 32 |-> frame_counter == $past(frame_counter) + 1),43,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0; // 
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_frame_counter_increment,assert property (@(posedge clock) pc == L9 && bit_count_B < 32 |-> frame_counter == $past(frame_counter)),43,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0; // 
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_transition_back_to_L6,assert property (@(posedge clock) pc == L9 && bit_count_B == 32 |-> pc == L6),44,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin // 
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_transition_back_to_L6,assert property (@(posedge clock) pc == L9 && bit_count_B < 32 |-> pc == L9),44,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin // 
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_frame_ofs_assignment,assert property (@(posedge clock) frame_ofs == frame_counter[1:0]),20,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0; // 
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_bit_count_B_reset_at_L6,assert property (@(posedge clock) pc == L6 |-> bit_count_B == 1),35,PASS,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3; // 
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_bit_count_B_reset_at_L6,assert property (@(posedge clock) pc == L9 |-> bit_count_B != 1),35,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3; // 
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_load_A_without_31_bits,assert property (@(posedge clock) bit_count_A != 31 |-> load_A == 0),31,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0; // 
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1;
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
+check_no_load_B_without_31_bits,assert property (@(posedge clock) bit_count_B != 31 |-> load_B == 0),41,FAIL,"module bit_counter(clock, reset, preamble_1, preamble_2, preamble_3,
+                   bit_count_A, bit_count_B, frame_counter, load_A, load_B, load_buff, frame_ofs);
+    input clock, reset;
+    input preamble_1, preamble_2, preamble_3;
+    output reg [6:0] bit_count_A, bit_count_B;
+    output reg [8:0] frame_counter;
+    output reg load_A, load_B, load_buff;
+    output wire [1:0] frame_ofs;
+    parameter L0 = 0;
+    parameter L3 = 3;
+    parameter L6 = 6;
+    parameter L9 = 9;
+    reg [3:0] pc;
+    initial begin
+        bit_count_A = 0;
+        bit_count_B = 0;
+        frame_counter = 0;
+        load_A = 0;
+        load_B = 0;
+        load_buff = 0;
+        pc = L0;
+    end
+    assign frame_ofs = frame_counter[1:0];
+    always @ (posedge clock) begin
+        if (reset) begin
+            bit_count_A = 0;
+            bit_count_B = 0;
+            frame_counter = 0;
+            load_A = 0;
+            load_B = 0;
+            load_buff = 0;
+            pc = L0;
+        end else begin
+            case (pc)
+                L0: if (preamble_1) pc = L3;
+                L3: if (bit_count_A < 32) begin
+                    bit_count_A = bit_count_A + 1;
+                    if (bit_count_A == 31) load_A = 1;
+                end else pc = L6;
+                L6: if (frame_counter < 191) begin
+                    bit_count_B = 1; // 
+                    pc = L9;
+                end else pc = L0;
+                L9: if (bit_count_B < 32) begin
+                    bit_count_B = bit_count_B + 1;
+                    if (bit_count_B == 31) load_B = 1;
+                end else begin
+                    frame_counter = frame_counter + 1;
+                    pc = L6;
+                end
+            endcase
+        end
+    end
+endmodule"
