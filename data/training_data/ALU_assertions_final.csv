@@ -1,0 +1,1601 @@
+name,assertion_sv,line_number,expected_result,code
+check_initial_state_m0,assert property (@(posedge clk) $rose(clk) |-> m0 == 1),10,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m1,assert property (@(posedge clk) $rose(clk) |-> m1 == 0),11,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; //
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m2,assert property (@(posedge clk) $rose(clk) |-> m2 == 0),12,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; //
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m3,assert property (@(posedge clk) $rose(clk) |-> m3 == 0),13,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; //
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m4,assert property (@(posedge clk) $rose(clk) |-> m4 == 0),14,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; //
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m5,assert property (@(posedge clk) $rose(clk) |-> m5 == 0),15,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; //
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m6,assert property (@(posedge clk) $rose(clk) |-> m6 == 0),16,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; //
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_initial_state_m7,assert property (@(posedge clk) $rose(clk) |-> m7 == 0),17,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0;  //
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_readLoc1_memOut1,assert property (@(posedge clk) readLoc1 == 0 |-> memOut1 == m0),19,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1; //
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1; //
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1;  //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 : //
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_readLoc2_memOut2,assert property (@(posedge clk) readLoc2 == 0 |-> memOut2 == m0),23,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2; //
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0;  //
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 : //
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7; 
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc0_data,assert property (@(posedge clk) writeLoc == 0 |-> m0 == data),27,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7;
+    initial begin 
+        m0 = 1;  //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7; 
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data; //
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc1_data,assert property (@(posedge clk) writeLoc == 1 |-> m1 == data),28,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0;  //
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin 
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data; //
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc2_data,assert property (@(posedge clk) writeLoc == 2 |-> m2 == data),29,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; //
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin 
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data; //
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc3_data,assert property (@(posedge clk) writeLoc == 3 |-> m3 == data),30,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7;
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0;  //
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data; 
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data; //
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc4_data,assert property (@(posedge clk) writeLoc == 4 |-> m4 == data),31,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0;  //
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data; 
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data; //
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc5_data,assert property (@(posedge clk) writeLoc == 5 |-> m5 == data),32,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0;  //
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data; 
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data; //
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc6_data,assert property (@(posedge clk) writeLoc == 6 |-> m6 == data),33,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; //
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data; 
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data; //
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc7_data,assert property (@(posedge clk) writeLoc == 7 |-> m7 == data),34,PASS,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0;  //
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data; 
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data; //
+        end
+    end
+endmodule"
+check_opcode_JMP,assert property (@(posedge clk) opcode == `JMP |-> m0 == 1),26,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7;
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 : // 
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_readLoc1_not_equal_0,assert property (@(posedge clk) readLoc1 != 0 |-> memOut1 != m0),19,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1; //
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1; //
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1;  //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 : //
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_readLoc2_not_equal_0,assert property (@(posedge clk) readLoc2 != 0 |-> memOut2 != m0),23,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2; //
+    input [0:`DATA_ADDR] writeLoc;
+    input [0:`DATA] data;
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2; //
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7;
+    initial begin 
+        m0 = 1;  //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7; // 
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 : //
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_0,assert property (@(posedge clk) writeLoc != 0 |-> m0 != data),27,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1;  //
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7; 
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data; //
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_1,assert property (@(posedge clk) writeLoc != 1 |-> m1 != data),28,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0;  //
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin 
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_2,assert property (@(posedge clk) writeLoc != 2 |-> m2 != data),29,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0;  //
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin // 
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data; //
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_3,assert property (@(posedge clk) writeLoc != 3 |-> m3 != data),30,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7;
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0;  //
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data; 
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data; //
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_4,assert property (@(posedge clk) writeLoc != 4 |-> m4 != data),31,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; //
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data; 
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data; //
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_5,assert property (@(posedge clk) writeLoc != 5 |-> m5 != data),32,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0;  //
+        m6 = 0; 
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data; 
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data; //
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_6,assert property (@(posedge clk) writeLoc != 6 |-> m6 != data),33,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; //
+        m7 = 0; 
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data; 
+            if (writeLoc == 4) m4 = data;
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data; //
+            if (writeLoc == 7) m7 = data;
+        end
+    end
+endmodule"
+check_writeLoc_not_equal_7,assert property (@(posedge clk) writeLoc != 7 |-> m7 != data),34,FAIL,"module memory(clk, opcode, readLoc1, readLoc2, writeLoc, data, memOut1, memOut2);
+    input clk;
+    input [0:`OPCODE] opcode;
+    input [0:`DATA_ADDR] readLoc1;
+    input [0:`DATA_ADDR] readLoc2;
+    input [0:`DATA_ADDR] writeLoc; //
+    input [0:`DATA] data; //
+    output [0:`DATA] memOut1;
+    output [0:`DATA] memOut2;
+    reg [0:`DATA] m0, m1, m2, m3, m4, m5, m6, m7; //
+    initial begin 
+        m0 = 1; 
+        m1 = 0; 
+        m2 = 0; 
+        m3 = 0; 
+        m4 = 0; 
+        m5 = 0; 
+        m6 = 0; 
+        m7 = 0;  //
+    end
+    assign memOut1 = (readLoc1 == 0) ? m0 : (readLoc1 == 1) ? m1 : (readLoc1 == 2) ? m2 :
+                     (readLoc1 == 3) ? m3 : (readLoc1 == 4) ? m4 : (readLoc1 == 5) ? m5 :
+                     (readLoc1 == 6) ? m6 : m7;
+
+    assign memOut2 = (readLoc2 == 0) ? m0 : (readLoc2 == 1) ? m1 : (readLoc2 == 2) ? m2 :
+                     (readLoc2 == 3) ? m3 : (readLoc2 == 4) ? m4 : (readLoc2 == 5) ? m5 :
+                     (readLoc2 == 6) ? m6 : m7;
+    always @(posedge clk) begin
+        if (opcode != `JMP) begin //
+            if (writeLoc == 0) m0 = data;
+            if (writeLoc == 1) m1 = data;
+            if (writeLoc == 2) m2 = data;
+            if (writeLoc == 3) m3 = data;
+            if (writeLoc == 4) m4 = data; 
+            if (writeLoc == 5) m5 = data;
+            if (writeLoc == 6) m6 = data;
+            if (writeLoc == 7) m7 = data; //
+        end
+    end
+endmodule"
+check_opcode_validity,assert property (@(posedge clk) (opcode == `ADD) || (opcode == `XOR) || (opcode == `AND)),3,PASS,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; // 
+    input [0:`DATA] operand1;
+    input [0:`DATA] operand2;
+    output [0:`DATA] aluOut;
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) :
+                    (opcode == `AND) ? (operand1 & operand2) : 0; //
+endmodule"
+check_aluOut_add,assert property (@(posedge clk) (opcode == `ADD) |-> aluOut == (operand1 + operand2)),8,PASS,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) : //
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0;
+endmodule"
+check_aluOut_xor,assert property (@(posedge clk) (opcode == `XOR) |-> aluOut == (operand1 ^ operand2)),8,PASS,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : // 
+                    (opcode == `AND) ? (operand1 & operand2) : 0;
+endmodule"
+check_aluOut_and,assert property (@(posedge clk) (opcode == `AND) |-> aluOut == (operand1 & operand2)),8,PASS,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0; //
+endmodule"
+check_aluOut_zero,assert property (@(posedge clk) (opcode != `ADD && opcode != `XOR && opcode != `AND) |-> aluOut == 0),8,PASS,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0; //
+endmodule"
+check_opcode_ADD_fail,assert property (@(posedge clk) (opcode == `ADD) |-> aluOut != (operand1 ^ operand2)),8,FAIL,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; // 
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) : //
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0;
+endmodule"
+check_opcode_XOR_fail,assert property (@(posedge clk) (opcode == `XOR) |-> aluOut != (operand1 + operand2)),8,FAIL,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : // 
+                    (opcode == `AND) ? (operand1 & operand2) : 0;
+endmodule"
+check_opcode_AND_fail,assert property (@(posedge clk) (opcode == `AND) |-> aluOut != (operand1 ^ operand2)),8,FAIL,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0; //
+endmodule"
+check_aluOut_zero_fail,assert property (@(posedge clk) (opcode != `ADD && opcode != `XOR && opcode != `AND) |-> aluOut != 0),8,FAIL,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) :
+                    (opcode == `XOR) ? (operand1 ^ operand2) : 
+                    (opcode == `AND) ? (operand1 & operand2) : 0; //
+endmodule"
+check_aluOut_not_add_xor,assert property (@(posedge clk) ((opcode == `ADD) || (opcode == `XOR)) |-> aluOut != (operand1 & operand2)),8,FAIL,"module alu(clk, opcode, operand1, operand2, aluOut);
+    input clk;
+    input [0:`OPCODE] opcode; //
+    input [0:`DATA] operand1; //
+    input [0:`DATA] operand2; //
+    output [0:`DATA] aluOut; //
+    assign aluOut = (opcode == `ADD) ? (operand1 + operand2) : //
+                    (opcode == `XOR) ? (operand1 ^ operand2) : // 
+                    (opcode == `AND) ? (operand1 & operand2) : 0;
+endmodule"
+check_progCntr_zero,assert property (@(posedge clk) (progCntr == 0) |-> instruction == instr0),9,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576; //
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304; 
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 : //
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_one,assert property (@(posedge clk) (progCntr == 1) |-> instruction == instr1),10,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152; //
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505; 
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 : //
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_two,assert property (@(posedge clk) (progCntr == 2) |-> instruction == instr2),11,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728; //
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0; 
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 : //
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_three,assert property (@(posedge clk) (progCntr == 3) |-> instruction == instr3),12,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304; //
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;  
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 : //
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_four,assert property (@(posedge clk) (progCntr == 4) |-> instruction == instr4),13,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505; //
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0; 
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 : //
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_five,assert property (@(posedge clk) (progCntr == 5) |-> instruction == instr5),14,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0; //
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 : 
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 : //
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_six,assert property (@(posedge clk) (progCntr == 6) |-> instruction == instr6),15,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; // 
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0; 
+    assign instr6 = 0; //
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 : 
+                         (progCntr == 6) ? instr6 : instr7; //
+endmodule"
+check_progCntr_seven,assert property (@(posedge clk) (progCntr != 0 && progCntr != 1 && progCntr != 2 && progCntr != 3 && progCntr != 4 && progCntr != 5 && progCntr != 6) |-> instruction == instr7),16,FAIL,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; //
+    output [0:`INSTR] instruction; //
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576; //
+    assign instr1 = 1152; // 
+    assign instr2 = 1728; //
+    assign instr3 = 2304; //
+    assign instr4 = 505; //
+    assign instr5 = 0; //
+    assign instr6 = 0; //
+    assign instr7 = 0; //
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7; // 
+endmodule"
+check_instr0_value,assert property (@(posedge clk) instr0 == 576),5,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; // 
+    assign instr0 = 576; //
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr1_value,assert property (@(posedge clk) instr1 == 1152),6,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576; 
+    assign instr1 = 1152; //
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr2_value,assert property (@(posedge clk) instr2 == 1728),7,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152; 
+    assign instr2 = 1728; //
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr3_value,assert property (@(posedge clk) instr3 == 2304),8,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728; 
+    assign instr3 = 2304; //
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr4_value,assert property (@(posedge clk) instr4 == 505),9,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304; 
+    assign instr4 = 505; //
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr5_value,assert property (@(posedge clk) instr5 == 0),10,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505; 
+    assign instr5 = 0; //
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr6_value,assert property (@(posedge clk) instr6 == 0),11,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0; 
+    assign instr6 = 0; //
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr7_value,assert property (@(posedge clk) instr7 == 0),12,PASS,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0; 
+    assign instr7 = 0; //
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_progCntr_range,assert property (@(posedge clk) (progCntr >= 0 && progCntr <= `PROG_ADDR)),3,FAIL,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr; // 
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7;
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instruction_range,assert property (@(posedge clk) (instruction >= 0 && instruction <= `INSTR)),4,FAIL,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction; // 
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7;
+    assign instr0 = 576;
+    assign instr1 = 1152;
+    assign instr2 = 1728;
+    assign instr3 = 2304;
+    assign instr4 = 505;
+    assign instr5 = 0;
+    assign instr6 = 0;
+    assign instr7 = 0;
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7;
+endmodule"
+check_instr0_to_instr7,assert property (@(posedge clk) (instr0 != instr1 && instr0 != instr2 && instr0 != instr3 && instr0 != instr4 && instr0 != instr5 && instr0 != instr6 && instr0 != instr7)),5,FAIL,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; // 
+    assign instr0 = 576; //
+    assign instr1 = 1152; //
+    assign instr2 = 1728; //
+    assign instr3 = 2304; // 
+    assign instr4 = 505; //
+    assign instr5 = 0; //
+    assign instr6 = 0; //
+    assign instr7 = 0; //
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7; //
+endmodule"
+check_instr1_to_instr7,assert property (@(posedge clk) (instr1 != instr2 && instr1 != instr3 && instr1 != instr4 && instr1 != instr5 && instr1 != instr6 && instr1 != instr7)),6,FAIL,"module program(clk, progCntr, instruction);
+    input clk;
+    input [0:`PROG_ADDR] progCntr;
+    output [0:`INSTR] instruction;
+    wire [0:`INSTR] instr0, instr1, instr2, instr3, instr4, instr5, instr6, instr7; //
+    assign instr0 = 576; // 
+    assign instr1 = 1152; //
+    assign instr2 = 1728; //
+    assign instr3 = 2304; //
+    assign instr4 = 505; //
+    assign instr5 = 0; //
+    assign instr6 = 0; //
+    assign instr7 = 0; //
+    assign instruction = (progCntr == 0) ? instr0 : (progCntr == 1) ? instr1 : (progCntr == 2) ? instr2 :
+                         (progCntr == 3) ? instr3 : (progCntr == 4) ? instr4 : (progCntr == 5) ? instr5 :
+                         (progCntr == 6) ? instr6 : instr7; //
+endmodule"

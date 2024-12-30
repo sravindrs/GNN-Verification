@@ -1,0 +1,1927 @@
+name,assertion_sv,line_number,expected_result,code
+check_sel_0_word_0,assert property (@(posedge clk) sel == 2'b00 && word[15:4] == 0 |-> prefix == 16'b0111111111111111),4,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+check_sel_0_word_1,"assert property (@(posedge clk) sel == 2'b00 && word[15:4] != 0 |-> prefix == {13'b1, word[2:0]})",5,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {13'b1, word[2:0]}; // 
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+check_sel_1_word_0,assert property (@(posedge clk) sel == 2'b01 && word[15:7] == 0 |-> prefix == 16'b0111111111111111),7,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {10'b1, word[5:0]}; 
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+check_sel_1_word_1,"assert property (@(posedge clk) sel == 2'b01 && word[15:7] != 0 |-> prefix == {10'b1, word[5:0]})",8,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {10'b1, word[5:0]}; //
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+check_sel_2_word_0,assert property (@(posedge clk) sel == 2'b10 && word[15:10] == 0 |-> prefix == 16'b0111111111111111),10,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111; 
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+check_sel_2_word_1,"assert property (@(posedge clk) sel == 2'b10 && word[15:10] != 0 |-> prefix == {7'b1, word[8:0]})",11,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {7'b1, word[8:0]}; //
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]}; 
+        endcase
+    end
+endmodule"
+check_sel_3_word_0,assert property (@(posedge clk) sel == 2'b11 && word[15:13] == 0 |-> prefix == 16'b0111111111111111),13,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end 
+endmodule"
+check_sel_3_word_1,"assert property (@(posedge clk) sel == 2'b11 && word[15:13] != 0 |-> prefix == {4'b1, word[11:0]})",14,PASS,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel)
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule // "
+fail_sel_0_word_0,assert property (@(posedge clk) sel == 2'b00 && word[15:4] == 0 |-> prefix != 16'b0111111111111111),4,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+fail_sel_1_word_1,"assert property (@(posedge clk) sel == 2'b01 && word[15:7] != 0 |-> prefix != {10'b1, word[5:0]})",8,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {10'b1, word[5:0]}; //
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111; 
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+fail_sel_2_word_0,assert property (@(posedge clk) sel == 2'b10 && word[15:10] == 0 |-> prefix != 16'b0111111111111111),10,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;  
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+fail_sel_3_word_1,"assert property (@(posedge clk) sel == 2'b11 && word[15:13] != 0 |-> prefix != {4'b1, word[11:0]})",14,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {4'b1, word[11:0]}; //
+        endcase
+    end
+endmodule "
+fail_sel_0_word_1,"assert property (@(posedge clk) sel == 2'b00 && word[15:4] != 0 |-> prefix != {13'b1, word[2:0]})",5,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {13'b1, word[2:0]};  //
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+fail_sel_1_word_0,assert property (@(posedge clk) sel == 2'b01 && word[15:7] == 0 |-> prefix != 16'b0111111111111111),7,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {10'b1, word[5:0]}; // 
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+               else prefix = {7'b1, word[8:0]};
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]};
+        endcase
+    end
+endmodule"
+fail_sel_2_word_1,"assert property (@(posedge clk) sel == 2'b10 && word[15:10] != 0 |-> prefix != {7'b1, word[8:0]})",11,FAIL,"module prefix_function(input [15:0] word, input [1:0] sel, output reg [15:0] prefix);
+    always @(*) begin
+        case (sel) //
+            0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+               else prefix = {13'b1, word[2:0]};
+            1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+               else prefix = {10'b1, word[5:0]};
+            2: if (word[15:10] == 0) prefix = 16'b0111111111111111; //
+               else prefix = {7'b1, word[8:0]}; //
+            3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+               else prefix = {4'b1, word[11:0]}; 
+        endcase
+    end
+endmodule"
+check_initial_word_value,assert property (@(posedge clk) init |-> word == code(sel1)),59,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1; //
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word; //
+    reg found;
+    reg init; //
+    function [15:0] code; //
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin //
+        word = code(sel1); //
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin 
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_initial_found_value,assert property (@(posedge clk) init |-> found == 0),60,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found; //
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0; //
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_initial_init_value,assert property (@(posedge clk) init |-> init == 1),61,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin //
+        word = code(sel1);
+        found = 0;
+        init = 1; //
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0; // 
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_other_assignment,assert property (@(posedge clk) other == code(sel1)),63,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1; //
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1); //
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); 
+        else word = 0;
+    end
+endmodule"
+check_found_assignment,assert property (@(posedge clk) !init |-> found == (word == other)),65,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other; //
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end 
+endmodule"
+check_init_assignment,assert property (@(posedge clk) init == 0),66,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0; //
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule "
+check_word_assignment_1,"assert property (@(posedge clk) (other == prefix(word, sel2)) |-> word == suffix(word, sel2))",67,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1; 
+    input [1:0] sel2; //
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; //
+        input [15:0] word; //
+        input [1:0] sel; //
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word; //
+        input [1:0] sel; //
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2); //
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_word_assignment_2,"assert property (@(posedge clk) (prefix(other, sel2) == word) |-> word == suffix(other, sel2))",68,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2; //
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; //
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1); //
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other; //
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2); //
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); //
+        else word = 0;
+    end
+endmodule"
+check_word_assignment_3,"assert property (@(posedge clk) !(other == prefix(word, sel2)) && !(prefix(other, sel2) == word) |-> word == 0)",69,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2; //
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; //
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2); //
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); //
+        else word = 0;
+    end
+endmodule"
+check_prefix_0,assert property (@(posedge clk) (sel == 0) |-> code == 16'b0000000000001000),20,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000;  //
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; 
+        input [15:0] word;
+        input [1:0] sel; 
+        begin
+            case (sel) 
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111; 
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_1,assert property (@(posedge clk) (sel == 1) |-> code == 16'b0000000000001010),21,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; //
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_2,assert property (@(posedge clk) (sel == 2) |-> code == 16'b0000000001011000),22,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; //
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase 
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_3,assert property (@(posedge clk) (sel == 3) |-> code == 16'b0000001001001000),23,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; //
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end // 
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_4,assert property (@(posedge clk) (sel == 4) |-> code == 16'b0000001011000001),24,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; //
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction 
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_5,assert property (@(posedge clk) (sel == 5) |-> code == 16'b0000001001100011),25,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; //
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; 
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_6,assert property (@(posedge clk) (sel == 6) |-> code == 16'b1100011010001001),26,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; //
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word; 
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_prefix_7,assert property (@(posedge clk) (sel == 7) |-> code == 16'b0000000000001000),27,PASS,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code; //
+        input [2:0] sel; //
+        begin
+            case (sel) //
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; //
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel; 
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_suffix_0,"assert property (@(posedge clk) (sel == 0) |-> suffix == {3'b0, word[15:3]})",49,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word; //
+        input [1:0] sel;  //
+        begin
+            case (sel) //
+                0: suffix = {3'b0, word[15:3]}; //
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]}; 
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_suffix_1,"assert property (@(posedge clk) (sel == 1) |-> suffix == {6'b0, word[15:6]})",50,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word; //
+        input [1:0] sel; //
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]}; //
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase 
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_suffix_2,"assert property (@(posedge clk) (sel == 2) |-> suffix == {9'b0, word[15:9]})",51,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word; //
+        input [1:0] sel; //
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]}; //
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end 
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_suffix_3,"assert property (@(posedge clk) (sel == 3) |-> suffix == {12'b0, word[15:12]})",52,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other;
+    reg [15:0] word;
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word; //
+        input [1:0] sel; //
+        begin
+            case (sel) //
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]}; //
+            endcase
+        end
+    endfunction 
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_word_value_after_reset,assert property (@(posedge clk) (init && found) |-> word == 0),59,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other; 
+    reg [15:0] word; //
+    reg found; // 
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0; //
+        init = 1; //
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin // 
+        found = !init && word == other; //
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end
+endmodule"
+check_other_value_after_reset,assert property (@(posedge clk) (init && found) |-> other == 0),63,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word;
+    reg found; //
+    reg init; //
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other; //
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); // 
+        else word = 0;
+    end
+endmodule"
+check_word_and_other_equality,assert property (@(posedge clk) word == other),65,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2;
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1); //
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1); //
+    always @ (posedge clk) begin
+        found = !init && word == other; //
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2);
+        else word = 0;
+    end 
+endmodule"
+check_word_and_prefix_equality,"assert property (@(posedge clk) word == prefix(other, sel2))",68,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1;
+    input [1:0] sel2; //
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix; //
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2);
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); //
+        else word = 0;
+    end
+endmodule"
+check_word_and_suffix_equality,"assert property (@(posedge clk) word == suffix(other, sel2))",69,FAIL,"module main(clk, sel1, sel2, found);
+    input clk;
+    input [2:0] sel1; 
+    input [1:0] sel2; //
+    output found;
+    wire [15:0] other; //
+    reg [15:0] word; //
+    reg found;
+    reg init;
+    function [15:0] code;
+        input [2:0] sel;
+        begin
+            case (sel)
+                0: code = 16'b0000000000001000; 
+                1: code = 16'b0000000000001010; 
+                2: code = 16'b0000000001011000; 
+                3: code = 16'b0000001001001000; 
+                4: code = 16'b0000001011000001; 
+                5: code = 16'b0000001001100011; 
+                6: code = 16'b1100011010001001; 
+                7: code = 16'b0000000000001000; 
+            endcase
+        end
+    endfunction
+    function [15:0] prefix;
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: if (word[15:4] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {13'b1, word[2:0]};
+                1: if (word[15:7] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {10'b1, word[5:0]};
+                2: if (word[15:10] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {7'b1, word[8:0]};
+                3: if (word[15:13] == 0) prefix = 16'b0111111111111111;
+                   else prefix = {4'b1, word[11:0]};
+            endcase
+        end
+    endfunction
+    function [15:0] suffix; //
+        input [15:0] word;
+        input [1:0] sel;
+        begin
+            case (sel)
+                0: suffix = {3'b0, word[15:3]};
+                1: suffix = {6'b0, word[15:6]};
+                2: suffix = {9'b0, word[15:9]};
+                3: suffix = {12'b0, word[15:12]};
+            endcase
+        end
+    endfunction
+    initial begin
+        word = code(sel1);
+        found = 0;
+        init = 1;
+    end
+    assign other = code(sel1);
+    always @ (posedge clk) begin
+        found = !init && word == other;
+        init = 0;
+        if (other == prefix(word, sel2)) word = suffix(word, sel2); 
+        else if (prefix(other, sel2) == word) word = suffix(other, sel2); //
+        else word = 0;
+    end
+endmodule"

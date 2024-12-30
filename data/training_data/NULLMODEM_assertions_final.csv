@@ -1,0 +1,2065 @@
+name,assertion_sv,line_number,expected_result,code
+check_reset_shiftload,assert property (@(posedge clock) reset == 0 |-> shiftLoad == 1),23,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad; //
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1; //
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin //
+            shiftLoad = 1; //
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_reset_freqdiv,assert property (@(posedge clock) reset == 0 |-> freqDiv == 0),23,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin //
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ld_datain_tobuf,assert property (@(posedge clock) ld == 1 |-> txBuf == dataIn),26,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_dataRdy_parIn_to_rxBuf,assert property (@(posedge clock) dataRdy == 1 |-> rxBuf == parallelIn),30,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn; //
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy; //
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin //
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_enable_txempty_shiftload_toggle,assert property (@(posedge clock) (enable == 1 && txEmpty == 1) |-> shiftLoad != $past(shiftLoad)),32,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable; //
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty; //
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad; //
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1; //
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1; //
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin //
+                if (shiftLoad == 1) shiftLoad = 0; //
+                else shiftLoad = 1; //
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ld_datain_tobuf_again,assert property (@(posedge clock) ld == 1 |-> txBuf == dataIn),36,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_freqDiv_increment,assert property (@(posedge clock) $past(freqDiv) == freqDiv-1),38,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7; //
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_enable_freqDiv,assert property (@(posedge clock) enable |-> freqDiv == 7),40,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable; //
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end 
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7; //
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ok_rxBuf_txBuf,assert property (@(posedge clock) ok |-> rxBuf == txBuf),41,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn; //
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy; //
+    input bitClock;
+    output ok; //
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end 
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf; //
+    assign parallelOut = txBuf;
+endmodule"
+check_parallelOut_txBuf,assert property (@(posedge clock) parallelOut == txBuf),42,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut; //
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; 
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf; //
+endmodule"
+check_reset_ld_txBuf,assert property (@(posedge clock) (reset == 0 && ld == 1) |-> txBuf == dataIn),26,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset; //
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1; // 
+            freqDiv = 0;
+            if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_reset_shiftload_not,assert property (@(posedge clock) reset == 1 |-> shiftLoad == 0),23,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1; //
+        freqDiv = 0;
+    end 
+    always @(posedge clock) begin
+        if (reset == 0) begin //
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_reset_freqdiv_not,assert property (@(posedge clock) reset == 1 |-> freqDiv != 0),23,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end 
+    always @(posedge clock) begin
+        if (reset == 0) begin //
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ld_datain_not_tobuf,assert property (@(posedge clock) ld == 0 |-> txBuf != dataIn),26,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin //
+            shiftLoad = 1; 
+            freqDiv = 0;
+            if (ld == 1) begin //
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_dataRdy_not_parIn_to_rxBuf,assert property (@(posedge clock) dataRdy == 0 |-> rxBuf != parallelIn),30,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn; //
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy; //
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end 
+        end else begin
+            if (dataRdy == 1) begin //
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_enable_txempty_not_shiftload_toggle,assert property (@(posedge clock) (enable == 0 && txEmpty == 1) |-> shiftLoad == $past(shiftLoad)),32,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable; //
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty; //
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin //
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin 
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin //
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ld_not_datain_tobuf_again,assert property (@(posedge clock) ld == 0 |-> txBuf != dataIn),36,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf; //
+endmodule"
+check_freqDiv_not_increment,assert property (@(posedge clock) $past(freqDiv) != freqDiv-1),38,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_ok_not_rxBuf_txBuf,assert property (@(posedge clock) !ok |-> rxBuf != txBuf),41,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok; //
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+ 
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf; //
+    assign parallelOut = txBuf;
+endmodule"
+check_parallelOut_not_txBuf,assert property (@(posedge clock) parallelOut != txBuf),42,FAIL,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut; //
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf; //
+endmodule"
+check_not_reset_shiftload,assert property (@(posedge clock) reset == 1 |-> shiftLoad != 1),23,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad; //
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1; //
+        freqDiv = 0;
+    end 
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1; //
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0; //
+                else shiftLoad = 1; //
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_reset_freqdiv,assert property (@(posedge clock) reset == 1 |-> freqDiv != 0),23,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end  
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_ld_datain_tobuf,assert property (@(posedge clock) ld == 0 |-> txBuf != dataIn),26,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin //
+            shiftLoad = 1; 
+            freqDiv = 0;
+            if (ld == 1) begin //
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_dataRdy_parIn_to_rxBuf,assert property (@(posedge clock) dataRdy == 0 |-> rxBuf != parallelIn),30,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn; //
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy; //
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin //
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_enable_txempty_shiftload_toggle,assert property (@(posedge clock) (enable == 0 || txEmpty == 0) |-> shiftLoad == $past(shiftLoad)),32,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable; //
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad; //
+    input txEmpty; //
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad; //
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1; //
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1; //
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin //
+                if (shiftLoad == 1) shiftLoad = 0; //
+                else shiftLoad = 1; //
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7; //
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_ld_datain_tobuf_again,assert property (@(posedge clock) ld == 0 |-> txBuf != dataIn),36,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock;
+    input reset;
+    input ld; //
+    input [7:0] dataIn; //
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_freqDiv_increment,assert property (@(posedge clock) $past(freqDiv) != freqDiv-1),38,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset; //
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin //
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin //
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_enable_freqDiv,assert property (@(posedge clock) !enable |-> freqDiv != 7),40,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable; //
+    output [7:0] parallelOut;
+    input [7:0] parallelIn;
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy;
+    input bitClock;
+    output ok;
+    reg [7:0] rxBuf;
+    reg [7:0] txBuf;
+    reg shiftLoad;
+    reg [3:0] freqDiv; //
+    initial begin
+        rxBuf = 8'b10000000;
+        txBuf = 8'b00000001;
+        shiftLoad = 1;
+        freqDiv = 0; //
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0; //
+            if (ld == 1) begin
+                txBuf = dataIn;
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn;
+            end
+            if (enable == 1 && txEmpty == 1) begin //
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn;
+            end 
+
+            freqDiv = freqDiv + 1; //
+        end
+    end
+    assign enable = freqDiv == 7; //
+    assign ok = rxBuf == txBuf;
+    assign parallelOut = txBuf;
+endmodule"
+check_not_ok_rxBuf_txBuf,assert property (@(posedge clock) !ok |-> rxBuf != txBuf),41,PASS,"module control(clock, reset, ld, dataIn, enable, parallelOut, parallelIn, shiftLoad, txEmpty, dataRdy, bitClock, ok);
+    input clock; //
+    input reset;
+    input ld;
+    input [7:0] dataIn;
+    output enable;
+    output [7:0] parallelOut;
+    input [7:0] parallelIn; //
+    output shiftLoad;
+    input txEmpty;
+    input dataRdy; //
+    input bitClock;
+    output ok; //
+    reg [7:0] rxBuf; //
+    reg [7:0] txBuf; //
+    reg shiftLoad;
+    reg [3:0] freqDiv;
+    initial begin
+        rxBuf = 8'b10000000; //
+        txBuf = 8'b00000001; //
+        shiftLoad = 1;
+        freqDiv = 0;
+    end
+    always @(posedge clock) begin //
+        if (reset == 0) begin
+            shiftLoad = 1;
+            freqDiv = 0;
+            if (ld == 1) begin
+                txBuf = dataIn; //
+            end
+        end else begin
+            if (dataRdy == 1) begin
+                rxBuf = parallelIn; //
+            end
+            if (enable == 1 && txEmpty == 1) begin
+                if (shiftLoad == 1) shiftLoad = 0;
+                else shiftLoad = 1;
+            end else if (ld == 1) begin
+                txBuf = dataIn; //
+            end 
+            freqDiv = freqDiv + 1;
+        end
+    end
+    assign enable = freqDiv == 7;
+    assign ok = rxBuf == txBuf; //
+    assign parallelOut = txBuf;
+endmodule"
+check_reset,assert property (@(posedge Clk16xT) ResetF == 0 |-> Count16 == 0),24,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF; //
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16; //
+    reg RxMT;
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0; //
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin //
+            Count16 = 0; //
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin 
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxinit,assert property (@(posedge Clk16xT) ResetF == 0 |-> RxReg == RxInit_c),25,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF; //
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111; //
+    reg [9:0] RxReg; //
+    reg [3:0] Count16;
+    reg RxMT;
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c; //
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0; // 
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxmt,assert property (@(posedge Clk16xT) ResetF == 0 |-> RxMT == 1),26,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF; //
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16;
+    reg RxMT; //
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1; //
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1; //
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0; // 
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_count16_increase,assert property (@(posedge Clk16xT) Count16 != 7 && RxMT == 0 |-> $stable(Count16 + 1)),37,FAIL,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16; //
+    reg RxMT; //
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0; //
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin //
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1; //
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+  
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxreg_shift,assert property (@(posedge Clk16xT) Count16 == 7 && RxMT == 0 |-> $stable(RxReg[8:0])),33,FAIL,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg; //
+    reg [3:0] Count16; //
+    reg RxMT; //
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin //
+            RxReg[8:0] = RxReg[9:1]; //
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxin_capture,assert property (@(posedge Clk16xT) $rose(RxIn) |-> $stable(Serial_InT)),40,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT; //
+    input ResetF;
+    input Serial_InT; //
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16;
+    reg RxMT;
+    reg RxIn; //
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0; //
+    end
+    always @(posedge Clk16xT) begin //
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin //
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn; //
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT; //
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end 
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_datarady_clear,assert property (@(posedge Clk16xT) $rose(DataRdyT) |-> RxMT == 1),43,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT; //
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT; //
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16;
+    reg RxMT; //
+    reg RxIn;
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1; //
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin //
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1; //
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin //
+            Count16 = 0;
+            RxMT = 0; //
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin //
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin //
+            RxMT = 1; //
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0; //
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_bitclkt,assert property (@(posedge Clk16xT) Count16 == 9 |-> BitClkT),48,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT; //
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT; //
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16; //
+    reg RxMT;
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0; //
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin //
+        if (ResetF == 0) begin
+            Count16 = 0; //
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0; //
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1; //
+        end else begin
+            Count16 = Count16 + 1; //
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9; //
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_dataout_assignment,assert property (@(posedge Clk16xT) $stable(DataOuT) |-> DataOuT == RxReg[8:1]),49,FAIL,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT; //
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT; //
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg; //
+    reg [3:0] Count16;
+    reg RxMT;
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c; //
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin //
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c; //
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c; //
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1]; //
+            RxReg[9] = RxIn; //
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1]; //
+endmodule"
+check_rxmt_to_start,assert property (@(posedge Clk16xT) RxMT == 1 && RxIn == 0 |-> RxMT == 0),28,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT; //
+    input ResetF;
+    input Serial_InT; //
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16;
+    reg RxMT; //
+    reg RxIn; //
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1; //
+        RxIn = 0; //
+    end
+    always @(posedge Clk16xT) begin //
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1; //
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin //
+            Count16 = 0;
+            RxMT = 0; //
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin 
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT; //
+
+        if (DataRdyT == 1) begin
+            RxMT = 1; //
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxreg_to_rxinit,assert property (@(posedge Clk16xT) RxMT == 1 && RxIn == 0 |-> RxReg == RxInit_c),29,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111; //
+    reg [9:0] RxReg; //
+    reg [3:0] Count16;
+    reg RxMT; //
+    reg RxIn; //
+    initial begin
+        RxReg = RxInit_c; //
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin //
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c; //
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1]; 
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_count16_to_zero,assert property (@(posedge Clk16xT) RxMT == 1 && RxIn == 0 |-> Count16 == 0),27,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg;
+    reg [3:0] Count16; //
+    reg RxMT; //
+    reg RxIn; //
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1; //
+        RxIn = 0; //
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin //
+            Count16 = 0; //
+            RxMT = 0;
+            RxReg = RxInit_c; 
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxreg_shift_in,assert property (@(posedge Clk16xT) Count16 == 7 && RxMT == 0 |-> RxReg[9] == RxIn),34,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg; //
+    reg [3:0] Count16; //
+    reg RxMT; //
+    reg RxIn;  ..
+    initial begin
+        RxReg = RxInit_c; //
+        Count16 = 0; //
+        RxMT = 1; //
+        RxIn = 0; //
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin //
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn; //
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end 
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_rxreg_not_shift,assert property (@(posedge Clk16xT) Count16 != 7 && RxMT == 0 |-> $stable(RxReg)),35,FAIL,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT;
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg; //
+    reg [3:0] Count16; //
+    reg RxMT; //
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c;
+        Count16 = 0;
+        RxMT = 1;
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin //
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn; //
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0;
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"
+check_datarady_assert,assert property (@(posedge Clk16xT) RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0 |-> DataRdyT),47,PASS,"module UartRx(Clk16xT, ResetF, Serial_InT, DataRdyT, DataOuT, BitClkT);
+    input Clk16xT;
+    input ResetF;
+    input Serial_InT;
+    output DataRdyT; //
+    output [7:0] DataOuT;
+    output BitClkT;
+    parameter RxInit_c = 10'b1111111111;
+    reg [9:0] RxReg; //
+    reg [3:0] Count16; 
+    reg RxMT; //
+    reg RxIn; 
+    initial begin
+        RxReg = RxInit_c; //
+        Count16 = 0;
+        RxMT = 1; //
+        RxIn = 0;
+    end
+    always @(posedge Clk16xT) begin
+        if (ResetF == 0) begin
+            Count16 = 0;
+            RxMT = 1;
+            RxReg = RxInit_c;
+        end else if (RxMT == 1 && RxIn == 0) begin
+            Count16 = 0;
+            RxMT = 0;
+            RxReg = RxInit_c;
+        end else if (Count16 == 7 && RxMT == 0) begin
+            RxReg[8:0] = RxReg[9:1];
+            RxReg[9] = RxIn;
+            Count16 = Count16 + 1;
+        end else begin
+            Count16 = Count16 + 1;
+        end
+
+        RxIn = Serial_InT;
+
+        if (DataRdyT == 1) begin
+            RxMT = 1;
+        end
+    end
+    assign DataRdyT = RxMT == 0 && RxReg[9] == 1 && RxReg[0] == 0; //
+    assign BitClkT = Count16 == 9;
+    assign DataOuT = RxReg[8:1];
+endmodule"

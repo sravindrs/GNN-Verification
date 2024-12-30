@@ -1,0 +1,1859 @@
+name,assertion_sv,line_number,expected_result,code
+check_req_to_ack,assert property (@(posedge clock) req == 1 |-> ack == 1),10,PASS,"module main(clock);
+    input clock;
+    reg req; //
+    wire ack, nd; //
+
+    initial req = 0; //
+
+    assign nd = 1; //
+
+    always @ (posedge clock) 
+        req = nd; //
+    
+    reqAck ra(clock, req, ack); //
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req; //
+    output ack; //
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; //
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle; //
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done); //
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_idle_to_starting,assert property (@(posedge clock) state == idle |-> state == starting),26,PASS,"module main(clock);
+    input clock;
+    reg req; //
+    wire ack, nd;
+
+    initial req = 0; //
+
+    assign nd = 1; //
+
+    always @ (posedge clock)
+        req = nd; //
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req; //
+    output ack;
+
+    parameter idle = 2'd0, //
+              starting = 2'd1, //
+              working = 2'd2,
+              done = 2'd3;
+ 
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle; //
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_starting_to_working,assert property (@(posedge clock) state == starting |-> state == working),27,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1, //
+              working = 2'd2, //
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin //
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working; //
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_working_to_done,assert property (@(posedge clock) state == working |-> state == done),28,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2, //
+              done = 2'd3; //
+
+    reg [1:0] state; //
+    wire start, ready; //
+
+    initial state = idle;
+
+    always @ (posedge clock) begin //
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready; //
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111); //
+endmodule"
+check_done_to_idle,assert property (@(posedge clock) state == done |-> state == idle),29,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0, //
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; //
+
+    reg [1:0] state; //
+    wire start, ready;
+  
+    initial state = idle; //
+
+    always @ (posedge clock) begin //
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle; //
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_ack_with_done,assert property (@(posedge clock) state == done |-> ack == 1),32,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd; //
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack; //
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; //
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done); //
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_start_with_starting,assert property (@(posedge clock) state == starting |-> start == 1),33,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1, //
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready; //
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working; //
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_idle_to_idle,assert property (@(posedge clock) state == idle |-> state == idle),26,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0, //
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; 
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin
+        case (state) //
+            idle:      state = req ? starting : idle; //
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_starting_to_idle,assert property (@(posedge clock) state == starting |-> state == idle),27,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0, //
+              starting = 2'd1, //
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin //
+        case (state) //
+            idle:      state = req ? starting : idle;
+            starting:  state = working; //
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_starting_to_done,assert property (@(posedge clock) state == starting |-> state == done),27,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; // 
+    wire start, ready;
+
+    initial state = idle; 
+
+    always @ (posedge clock) begin
+        case (state) //
+            idle:      state = req ? starting : idle;
+            starting:  state = working; //
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_working_to_starting,assert property (@(posedge clock) state == working |-> state == starting),28,FAIL,"module main(clock);
+    input clock; //
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1, //
+              working = 2'd2, //
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin //
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_done_to_working,assert property (@(posedge clock) state == done |-> state == working),29,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready;
+ 
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state) //
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle; //
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_ack_with_working,assert property (@(posedge clock) state == working |-> ack == 1),32,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd; //
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack); //
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack; //
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2, //
+              done = 2'd3; //
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done); //
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready; 
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111); 
+endmodule"
+check_start_with_working,assert property (@(posedge clock) state == working |-> start == 1),33,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state) // 
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_start_to_count_zero,assert property (@(posedge clock) start == 1 |-> count == 0),42,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1, //
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready; //
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready); //
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start; //
+    output ready;
+
+    reg [9:0] count; //
+
+    initial count = 0; //
+
+    always @ (posedge clock) begin
+        if (start) //
+            count = 0; //
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_no_start_to_count_increment,assert property (@(posedge clock) start == 0 |-> count == count + 1),44,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready); //
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start; //
+    output ready;
+
+    reg [9:0] count; //
+
+    initial count = 0;
+
+    always @ (posedge clock) begin //
+        if (start) //
+            count = 0;
+        else
+            count = count + 1; //
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_count_to_ready,assert property (@(posedge clock) count == 10'b0000000111 |-> ready == 1),47,PASS,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready); 
+    input clock, start; //
+    output ready; //
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111); //
+endmodule"
+check_start_to_count_increment,assert property (@(posedge clock) start == 1 |-> count == count + 1),42,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready; //
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready); //
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start; //
+    output ready;
+
+    reg [9:0] count; //
+
+    initial count = 0;
+
+    always @ (posedge clock) begin //
+        if (start) //
+            count = 0; //
+        else
+            count = count + 1; //
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_no_start_to_count_zero,assert property (@(posedge clock) start == 0 |-> count == 0),44,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready); 
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start; //
+    output ready;
+
+    reg [9:0] count; //
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start) //
+            count = 0; //
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_count_not_ready,assert property (@(posedge clock) count == 10'b0000000110 |-> ready == 1),47,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready); 
+    input clock, start;
+    output ready; //
+
+    reg [9:0] count; //
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111); //
+endmodule"
+check_starting_to_starting,assert property (@(posedge clock) state == starting |-> state == starting),27,FAIL,"module main(clock);
+    input clock; //
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req; //
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1, //
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin //
+        case (state)
+            idle:      state = req ? starting : idle; //
+            starting:  state = working; // 
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_working_to_working,assert property (@(posedge clock) state == working |-> state == working),28,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready; //
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working; //
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_start_with_done,assert property (@(posedge clock) state == done |-> start == 1),33,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state; //
+    wire start, ready; //
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state) // 
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle; //
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); //
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_done_to_done,assert property (@(posedge clock) state == done |-> state == done),29,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; //
+
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle; //
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle; // 
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_idle_to_done,assert property (@(posedge clock) state == idle |-> state == done),26,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0, //
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3; //
+  
+    reg [1:0] state; //
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state) //
+            idle:      state = req ? starting : idle; //
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_start_to_ready,assert property (@(posedge clock) start == 1 |-> ready == 1),42,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting); // 
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start; //
+    output ready; //
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start) //
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111); //
+endmodule"
+check_no_start_to_ready,assert property (@(posedge clock) start == 0 |-> ready == 1),44,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready); 
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_idle_to_working,assert property (@(posedge clock) state == idle |-> state == working),26,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+ 
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_working_to_idle,assert property (@(posedge clock) state == working |-> state == idle),28,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready; 
+
+    initial state = idle;
+
+    always @ (posedge clock) begin
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"
+check_ack_with_idle,assert property (@(posedge clock) state == idle |-> ack == 1),32,FAIL,"module main(clock);
+    input clock;
+    reg req;
+    wire ack, nd;
+
+    initial req = 0;
+
+    assign nd = 1;
+
+    always @ (posedge clock)
+        req = nd;
+    
+    reqAck ra(clock, req, ack);
+
+endmodule
+
+module reqAck(clock, req, ack);
+    input clock, req;
+    output ack;
+
+    parameter idle = 2'd0,
+              starting = 2'd1,
+              working = 2'd2,
+              done = 2'd3;
+
+    reg [1:0] state;
+    wire start, ready;
+
+    initial state = idle;
+
+    always @ (posedge clock) begin  
+        case (state)
+            idle:      state = req ? starting : idle;
+            starting:  state = working;
+            working:   state = ready ? done : working;
+            done:      state = idle;
+        endcase
+    end
+
+    assign ack = (state == done);
+    assign start = (state == starting);
+
+    slave slv(clock, start, ready);
+endmodule
+
+module slave(clock, start, ready);
+    input clock, start;
+    output ready;
+
+    reg [9:0] count;
+
+    initial count = 0;
+
+    always @ (posedge clock) begin
+        if (start)
+            count = 0;
+        else
+            count = count + 1;
+    end
+
+    assign ready = (count == 10'b0000000111);
+endmodule"

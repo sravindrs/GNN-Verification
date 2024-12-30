@@ -1,0 +1,980 @@
+name,assertion_sv,line_number,expected_result,code
+check_load0_condition,assert property (@(posedge clock) load0[0] |-> ~valid[0] & iqLoads[0]),17,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads; //
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0; //
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;  //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0]; //
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_load0_condition_fail,assert property (@(posedge clock) load0[0] |-> valid[0] & iqLoads[0]),17,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads; //
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0; //
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0]; //
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_issue0_condition,assert property (@(posedge clock) issue0[0] |-> exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2])),23,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady; //
+    input [0:2] opsReady; //
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0; //
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0]; // 
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]); //
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_issue0_condition_fail,assert property (@(posedge clock) issue0[0] |-> ~exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2])),23,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady; //
+    input [0:2] opsReady; //
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0; //
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0]; // 
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]); //
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_nv0_condition,assert property (@(posedge clock) nv0 |-> ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0)),34,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush; //
+    output [0:1] load0; //
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1]; 
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_nv0_condition_fail,assert property (@(posedge clock) nv0 |-> flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0)),34,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush; //
+    output [0:1] load0; //
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1; //
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]); //
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]); //
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+  
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_valid_update,assert property (@(posedge clock) valid[0] |-> nv0),37,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2]; // 
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0; //
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_valid_update_fail,assert property (@(posedge clock) valid[0] |-> ~nv0),37,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid;
+    reg [0:2] valid; //
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2]; // 
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0; //
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_qAge_update,assert property (@(posedge clock) qAge[0] |-> nv0 & (~nv1 | qAge[0] | ~valid[1])),39,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid;
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); // 
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1; //
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]); //
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_qAge_update_fail,assert property (@(posedge clock) qAge[0] |-> ~nv0 & (~nv1 | qAge[0] | ~valid[1])),39,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); // 
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0; //
+        valid[1] = nv1; //
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]); //
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_load1_condition,assert property (@(posedge clock) load1[0] |-> ~valid[1] & valid[0] & iqLoads[0]),19,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads; //
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid;
+    reg [0:2] valid; //
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0]; 
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0]; //
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_load1_condition_fail,assert property (@(posedge clock) load1[0] |-> valid[1] & valid[0] & iqLoads[0]),19,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads; //
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0]; // 
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_issue1_condition,assert property (@(posedge clock) issue1[0] |-> exeReady[1] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1] | issue0[1]) & (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0]),28,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady; //
+    input [0:2] opsReady; //
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1; //
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0; //
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0]; //          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_issue1_condition_fail,assert property (@(posedge clock) issue1[0] |-> ~exeReady[1] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1] | issue0[1]) & (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0]),28,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady; //
+    input [0:2] opsReady; //
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1; //
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0; //
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] &  
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0]; //      
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_nv1_condition,assert property (@(posedge clock) nv1 |-> ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1)),35,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush; //
+    output [0:1] load0;
+    output [0:1] load1; //
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1; //
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]); //
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1]; //
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); //
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_nv1_condition_fail,assert property (@(posedge clock) nv1 |-> flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1)),35,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0; //
+    output [0:2] issue1; //
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0; 
+        valid = 3'd0; //
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]); //
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1]; //
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & // 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); //
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_valid1_update,assert property (@(posedge clock) valid[1] |-> nv1),38,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0);  
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); //
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1; //
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_valid1_update_fail,assert property (@(posedge clock) valid[1] |-> ~nv1),38,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid;
+    reg [0:2] qAge;
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); 
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1); //
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2);
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1; //
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"
+check_qAge1_update,assert property (@(posedge clock) qAge[1] |-> nv0 & (~nv2 | qAge[1] | ~valid[2])),40,PASS,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0; //
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2); // 
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]);
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]); //
+    end
+endmodule"
+check_qAge1_update_fail,assert property (@(posedge clock) qAge[1] |-> ~nv0 & (~nv2 | qAge[1] | ~valid[2])),40,FAIL,"module main(clock, iqLoads, exeReady, opsReady, flush, load0, load1, load2, issue0, issue1, valid);
+    input clock;
+    input [0:1] iqLoads;
+    input [0:1] exeReady;
+    input [0:2] opsReady;
+    input [0:2] flush;
+    output [0:1] load0;
+    output [0:1] load1;
+    output [0:1] load2;
+    output [0:2] issue0;
+    output [0:2] issue1;
+    output [0:2] valid; //
+    reg [0:2] valid; //
+    reg [0:2] qAge; //
+    initial begin
+        qAge = 3'd0;
+        valid = 3'd0;
+    end
+    assign load0[0] = ~valid[0] & iqLoads[0];
+    assign load0[1] = ~valid[0] & ~iqLoads[0] & iqLoads[1];
+    assign load1[0] = ~valid[1] & valid[0] & iqLoads[0];
+    assign load1[1] = ~valid[1] & iqLoads[1] & ~(load0[1] | load1[0]);
+    assign load2[0] = ~valid[2] & valid[1] & valid[0] & iqLoads[0];
+    assign load2[1] = ~valid[2] & iqLoads[1] & ~(load2[0] | load0[1] | load1[1]);
+    assign issue0[0] = exeReady[0] & opsReady[0] & valid[0] & (qAge[0] | ~opsReady[1]) & (qAge[1] | ~opsReady[2]);
+    assign issue0[1] = exeReady[0] & opsReady[1] & valid[1] & (~qAge[0] | ~opsReady[0]) & (qAge[2] | ~opsReady[2]);
+    assign issue0[2] = exeReady[0] & opsReady[2] & valid[2] & (~qAge[1] | ~opsReady[0]) & (qAge[2] | ~opsReady[1]);
+    assign issue1[0] = exeReady[1] & opsReady[0] & valid[0] & 
+                       (qAge[0] | ~opsReady[1] | issue0[1]) & 
+                       (qAge[1] | ~opsReady[2] | issue0[2]) & ~issue0[0];          
+    assign issue1[1] = exeReady[1] & opsReady[1] & valid[1] & 
+                       (~qAge[0] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[2] | issue0[2]) & ~issue0[1];
+                       
+    assign issue1[2] = exeReady[1] & opsReady[2] & valid[2] & 
+                       (~qAge[1] | ~opsReady[0] | issue0[0]) & 
+                       (qAge[2] | ~opsReady[1] | issue0[1]) & ~issue0[2];
+    wire nv0 = ~flush[0] & (valid[0] & ~(issue0[0] | issue1[0]) | load0); //
+    wire nv1 = ~flush[1] & (valid[1] & ~(issue0[1] | issue1[1]) | load1);
+    wire nv2 = ~flush[2] & (valid[2] & ~(issue0[2] | issue1[2]) | load2); // 
+    always @(posedge clock) begin
+        valid[0] = nv0;
+        valid[1] = nv1;
+        valid[2] = nv2;
+        qAge[0] = nv0 & (~nv1 | qAge[0] | ~valid[1]);
+        qAge[1] = nv0 & (~nv2 | qAge[1] | ~valid[2]); //
+        qAge[2] = nv1 & (~nv2 | qAge[2] | ~valid[2]);
+    end
+endmodule"

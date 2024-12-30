@@ -1,0 +1,5521 @@
+name,assertion_sv,line_number,expected_result,code
+check_INIT_state,assert property (@(posedge clock) state == s_init |-> state == s_wait),44,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0; //
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end 
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_WAIT_state_EQL,assert property (@(posedge clock) (state == s_wait && EQL) |-> state == s_enin),52,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin; //
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr; 
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_WAIT_state_notEQL,assert property (@(posedge clock) (state == s_wait && !EQL) |-> state == s_intr_1),55,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end 
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTR1_state_EQL,assert property (@(posedge clock) (state == s_intr_1 && EQL) |-> state == s_intr),61,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; //
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //   
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr; //
+                end else begin 
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTR1_state_notEQL,assert property (@(posedge clock) (state == s_intr_1 && !EQL) |-> state == s_wait),64,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; ///
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait; // 
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_ENIN_state_EQL,assert property (@(posedge clock) (state == s_enin && EQL) |-> state == s_enin),70,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; 
+                    state = s_enin; //
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_ENIN_state_notEQL,assert property (@(posedge clock) (state == s_enin && !EQL) |-> state == s_enin_w),74,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1; 
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w; //
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_ENINW_state_EQL,assert property (@(posedge clock) (state == s_enin_w && EQL) |-> state == s_enin_w),80,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; 
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state;
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin // 
+                if (EQL) begin //
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w; //
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_ENINW_state_notEQL,assert property (@(posedge clock) (state == s_enin_w && !EQL) |-> state == s_wait),84,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin //
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w; 
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait; //
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTR_state_EQL,assert property (@(posedge clock) (state == s_intr && EQL) |-> state == s_intr),90,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end 
+            s_intr: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr; //
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTR_state_notEQL,assert property (@(posedge clock) (state == s_intr && !EQL) |-> state == s_intr_w),94,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; 
+                    state = s_intr;
+                end else begin //
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w; //
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTRW_state_EQL,assert property (@(posedge clock) (state == s_intr_w && EQL) |-> state == s_intr_w),100,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end 
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w; //
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_INTRW_state_notEQL,assert property (@(posedge clock) (state == s_intr_w && !EQL) |-> state == s_wait),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; /
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin //
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait; /
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_init,assert property (@(posedge clock) state == s_init |-> CC_MUX == cc_enin),45,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0; //
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin //
+                CC_MUX = cc_enin; //
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin 
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_wait_EQL,assert property (@(posedge clock) (state == s_wait && EQL) |-> CC_MUX == cc_ackin),53,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11; //
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0; //
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state;
+    initial begin
+        state = s_init; //
+        CC_MUX = 0; //
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1; 
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_wait_notEQL,assert property (@(posedge clock) (state == s_wait && !EQL) |-> CC_MUX == cc_intr),56,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10; //
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; //
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin 
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intr1_EQL,assert property (@(posedge clock) (state == s_intr_1 && EQL) |-> CC_MUX == cc_ackin),62,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11; //
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; //
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; //
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intr1_notEQL,assert property (@(posedge clock) (state == s_intr_1 && !EQL) |-> CC_MUX == cc_enin),65,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; //
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin //
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin; //
+                    state = s_wait;
+                end 
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_enin_EQL,assert property (@(posedge clock) (state == s_enin && EQL) |-> CC_MUX == cc_ackin),71,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11; //
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; //
+                    state = s_enin; 
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_enin_notEQL,assert property (@(posedge clock) (state == s_enin && !EQL) |-> CC_MUX == cc_enin),75,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; //
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1; 
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_eninw_EQL,assert property (@(posedge clock) (state == s_enin_w && EQL) |-> CC_MUX == cc_enin),81,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin //
+                if (EQL) begin // 
+                    USCITE = 1;
+                    CC_MUX = cc_enin; //
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_eninw_notEQL,assert property (@(posedge clock) (state == s_enin_w && !EQL) |-> CC_MUX == cc_enin),85,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin //
+                if (EQL) begin //
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin // 
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin; //
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intr_EQL,assert property (@(posedge clock) (state == s_intr && EQL) |-> CC_MUX == cc_ackin),91,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11; //
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin // 
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; //
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intr_notEQL,assert property (@(posedge clock) (state == s_intr && !EQL) |-> CC_MUX == cc_intr),95,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10; //
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin //
+                if (EQL) begin  //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr; 
+                end else begin //
+                    USCITE = 3;
+                    CC_MUX = cc_intr; //
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intrw_EQL,assert property (@(posedge clock) (state == s_intr_w && EQL) |-> CC_MUX == cc_intr),101,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10; //
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end 
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3;
+                    CC_MUX = cc_intr; //
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_intrw_notEQL,assert property (@(posedge clock) (state == s_intr_w && !EQL) |-> CC_MUX == cc_enin),105,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3;
+                    CC_MUX = cc_intr; 
+                    state = s_intr_w;
+                end else begin //
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin; //
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_init,assert property (@(posedge clock) state == s_init |-> USCITE == out_norm),46,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; //
+    parameter s_init = 0; //
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin //
+                CC_MUX = cc_enin;
+                USCITE = out_norm; //
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin 
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_wait_EQL,assert property (@(posedge clock) (state == s_wait && EQL) |-> USCITE == 0),52,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin 
+        state = s_init; //
+        CC_MUX = 0;  
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)
+            s_init: begin 
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr; 
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_wait_notEQL,assert property (@(posedge clock) (state == s_wait && !EQL) |-> USCITE == out_norm),55,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; //
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin //
+                    USCITE = out_norm; //
+                    CC_MUX = cc_intr;
+                    state = s_intr_1; 
+                end
+            end  
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intr1_EQL,assert property (@(posedge clock) (state == s_intr_1 && EQL) |-> USCITE == 0),61,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; //
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin //
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin 
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intr1_notEQL,assert property (@(posedge clock) (state == s_intr_1 && !EQL) |-> USCITE == out_norm),64,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; //
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5; //
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait; // 
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin //
+                    USCITE = out_norm; //
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_enin_EQL,assert property (@(posedge clock) (state == s_enin && EQL) |-> USCITE == 0),70,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin; 
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_enin_notEQL,assert property (@(posedge clock) (state == s_enin && !EQL) |-> USCITE == 1),74,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE;
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2; //
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin //
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1; // 
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_eninw_EQL,assert property (@(posedge clock) (state == s_enin_w && EQL) |-> USCITE == 1),80,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init;
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin // 
+                if (EQL) begin //
+                    USCITE = 1; //
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_eninw_notEQL,assert property (@(posedge clock) (state == s_enin_w && !EQL) |-> USCITE == out_norm),84,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; //
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3; //
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin //
+                if (EQL) begin //
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w; 
+                end else begin //
+                    USCITE = out_norm; //
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intr_EQL,assert property (@(posedge clock) (state == s_intr && EQL) |-> USCITE == 0),90,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE;
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end 
+            s_intr: begin //
+                if (EQL) begin //
+                    USCITE = 0; //
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intr_notEQL,assert property (@(posedge clock) (state == s_intr && !EQL) |-> USCITE == 3),94,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4; //
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6;
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state;
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin; 
+                    state = s_intr;
+                end else begin //
+                    USCITE = 3; //
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin
+                if (EQL) begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_EQL,assert property (@(posedge clock) (state == s_intr_w && EQL) |-> USCITE == 3),100,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL; //
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01;
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0;
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end 
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3; //
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (state == s_intr_w && !EQL) |-> USCITE == out_norm),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; //
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; //
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; //
+    reg [2:1]   CC_MUX, USCITE; //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; //
+    initial begin
+        state = s_init; //
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0; //
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin //
+                if (EQL) begin //
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin //
+                    USCITE = out_norm; //
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_CC_MUX_init_EQL,assert property (@(posedge clock) (state == s_init && EQL) |-> CC_MUX == cc_nop),108,FAIL,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01; //
+    parameter   cc_enin  = 2'b01; //
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0; //
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE;  //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init;  //
+        CC_MUX = 0; //
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)  //
+            s_init: begin //
+                CC_MUX = cc_enin; //
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (state == s_wait && !EQL) |-> CC_MUX == cc_ackin),104,FAIL,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX; //
+    input       EQL; //
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT;
+    input       CONT_EQL;
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11; //
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1; //
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE;  //
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state;  //
+    initial begin
+        state = s_init;  //
+        CC_MUX = 0; //
+        ENABLE_COUNT = 0;
+        ACKOUT = 0;
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin
+            ACKOUT = 0;
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state)  //
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin //
+                if (EQL) begin //
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin //
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr; //
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==1) |-> ACKOUT == 0),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT; //
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0; //
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; //
+            ENABLE_COUNT = 0;
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==0) |-> ACKOUT == 1),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT;
+    output      ACKOUT; //
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0;
+        ACKOUT = 0; //
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0;
+        end else begin //
+            ACKOUT = 1; //
+            ENABLE_COUNT = 1;
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==0) |-> ENABLE_COUNT == 0),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT; //
+    output      ACKOUT; 
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0; //
+        ACKOUT = 0; 
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0; //
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==1) |-> ENABLE_COUNT == 1),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT; //
+    output      ACKOUT; 
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0; //
+        ACKOUT = 0; 
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0; 
+        end else begin //
+            ACKOUT = 1;
+            ENABLE_COUNT = 1; //
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==0) |-> ENABLE_COUNT == 1),104,FAIL,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT; //
+    output      ACKOUT; 
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0; //
+        ACKOUT = 0; 
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0; //
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==1) |-> ENABLE_COUNT == 0),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT; //
+    output      ACKOUT; 
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0; //
+        ACKOUT = 0; 
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0; 
+        end else begin //
+            ACKOUT = 1;
+            ENABLE_COUNT = 1; //
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
+check_USCITE_intrw_notEQL,assert property (@(posedge clock) (if (CONT_EQL==0) |-> ENABLE_COUNT == 0),104,PASS,"module main(CC_MUX, EQL, USCITE, clock, ENABLE_COUNT, ACKOUT, CONT_EQL);
+    output [2:1] CC_MUX;
+    input       EQL;
+    output [2:1] USCITE; 
+    input       clock;
+    output      ENABLE_COUNT; //
+    output      ACKOUT; 
+    input       CONT_EQL; //
+    parameter   cc_nop   = 2'b01;
+    parameter   cc_enin  = 2'b01;
+    parameter   cc_intr  = 2'b10;
+    parameter   cc_ackin = 2'b11;
+    parameter   out_norm = 2'b01; 
+    parameter s_init = 0;
+    parameter s_wait = 1;
+    parameter s_enin = 2;
+    parameter s_enin_w = 3;
+    parameter s_intr = 4;
+    parameter s_intr_1 = 5;
+    parameter s_intr_w = 6; 
+    reg [2:1]   CC_MUX, USCITE; 
+    reg         ENABLE_COUNT, ACKOUT;
+    reg         state; 
+    initial begin
+        state = s_init; 
+        CC_MUX = 0;
+        ENABLE_COUNT = 0; //
+        ACKOUT = 0; 
+        USCITE = 0; 
+    end
+    always @ (posedge clock) begin
+        if (CONT_EQL) begin //
+            ACKOUT = 0; 
+            ENABLE_COUNT = 0; //
+        end else begin
+            ACKOUT = 1;
+            ENABLE_COUNT = 1;
+        end
+        case (state) 
+            s_init: begin
+                CC_MUX = cc_enin;
+                USCITE = out_norm;
+                state = s_wait;
+            end
+            s_wait: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_intr;
+                    state = s_intr_1;
+                end
+            end
+            s_intr_1: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_enin: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_enin;
+                end else begin
+                    USCITE = 1;
+                    ACKOUT = 1;
+                    ENABLE_COUNT = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end
+            end
+            s_enin_w: begin
+                if (EQL) begin
+                    USCITE = 1;
+                    CC_MUX = cc_enin;
+                    state = s_enin_w;
+                end else begin
+                    USCITE = out_norm;
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+            s_intr: begin
+                if (EQL) begin
+                    USCITE = 0;
+                    CC_MUX = cc_ackin;
+                    state = s_intr;
+                end else begin
+                    USCITE = 3;
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end
+            end
+            s_intr_w: begin 
+                if (EQL) begin 
+                    USCITE = 3; 
+                    CC_MUX = cc_intr;
+                    state = s_intr_w;
+                end else begin 
+                    USCITE = out_norm; 
+                    CC_MUX = cc_enin;
+                    state = s_wait;
+                end
+            end
+        endcase
+    end
+endmodule"
